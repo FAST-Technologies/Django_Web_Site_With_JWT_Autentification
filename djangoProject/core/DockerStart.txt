@@ -1,0 +1,31 @@
+# Starting environment
+python -m venv .venv
+.venv\Scripts\activate
+
+# cd to directory
+cd core
+
+# Run main.py
+python main.py
+
+# Get Secret code and paste it to environment
+nt#_hd%*q2!=@c_i%0p6do01l#p8^x3iz5&js*%nm@q!6cyu5=
+$env:DJANGO_SECRET_KEY = "nt#_hd%*q2!=@c_i%0p6do01l#p8^x3iz5&js*%nm@q!6cyu5="
+
+# Build that way
+docker build . -t my-django-app
+docker run -p 8000:8000 my-django-app
+
+# Or build that way
+docker-compose up --build
+
+# Deleting data
+docker system prune
+
+# Example of data to send by Postman
+{
+    "blog_name": "My Awesome Blog",
+    "blog_description": "A blog about web development",
+    "blog_image": "https://example.com/image.jpg",
+    "price": 129.99
+}

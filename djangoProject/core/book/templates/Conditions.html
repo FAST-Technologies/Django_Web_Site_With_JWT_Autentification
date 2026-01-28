@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReLife - Условия пользования и политика конфиденциальности</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/RelifeDashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/Conditions.css' %}">
+</head>
+<body>
+    <div class="translate-button">
+        <button class="btn btn-primary" data-lang="ru" onclick="toggleTranslate()">RU/EN</button>
+    </div>
+    <div class="container">
+        <a href="{% url 'dashboard' %}" class="back-link">← Назад на главную</a>
+        <h1 class="terms-title">Условия пользования и политика конфиденциальности</h1>
+        <h2 class="terms-heading">Условия пользования</h2>
+        <p class="terms-text">
+            Добро пожаловать в ReLifePMT! Используя наш сервис, вы соглашаетесь с настоящими условиями пользования. Пожалуйста, внимательно прочитайте их перед началом использования.
+        </p>
+        <p class="terms-text">
+            1. Вы обязаны использовать наш сервис только в законных целях и в соответствии с применимыми законами.<br>
+            2. Мы оставляем за собой право изменять или прекращать предоставление услуг в любое время без предварительного уведомления.<br>
+            3. Вы несете ответственность за сохранность своих учетных данных и за все действия, совершенные под вашей учетной записью.<br>
+            4. Запрещается использовать наш сервис для распространения вредоносного ПО, спама или другого незаконного контента.
+        </p>
+        <h2 class="privacy-heading">Политика конфиденциальности</h2>
+        <p class="privacy-text">
+            Мы ценим вашу конфиденциальность и стремимся защитить ваши персональные данные. В этом разделе описано, как мы собираем, используем и защищаем вашу информацию.
+        </p>
+        <p class="privacy-text">
+            1. <strong>Сбор данных:</strong> Мы собираем только те данные, которые вы предоставляете нам напрямую (например, имя, email, данные проектов и задач).<br>
+            2. <strong>Использование данных:</strong> Ваши данные используются для предоставления услуг, улучшения работы сервиса и связи с вами.<br>
+            3. <strong>Хранение данных:</strong> Мы храним ваши данные в зашифрованном виде и принимаем меры для их защиты от несанкционированного доступа.<br>
+            4. <strong>Передача данных:</strong> Мы не передаем ваши данные третьим лицам, за исключением случаев, предусмотренных законом.<br>
+            5. <strong>Ваши права:</strong> Вы можете запросить доступ, изменение или удаление ваших данных, связавшись с нами по адресу support@relifepmt.com.
+        </p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/Conditions.js' %}"></script>
+</body>
+</html>

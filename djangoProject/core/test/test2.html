@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReLife</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/test2.css">
+</head>
+<body>
+    <div class="header">
+        <div class="user-info">
+            <img src="static/images/account_image.png" alt="User Avatar">
+            <span class="user-text">Welcome to <span class="style_text"><span class="style_text2">ReLife</span>PMT</span>, UserName</span>
+        </div>
+        <div class="logo">
+            <img src="static/images/ReLife.png" alt="ReLife Logo">
+        </div>
+        <div class="translate_img">
+            <button class="btn btn-primary" onclick="toggleTranslate()" data-lang="ru">
+                <img src="static/images/translate.png" alt="Translate">
+            </button>
+        </div>
+        <div>
+            <button class="btn btn-primary burger-menu" onclick="toggleSidebar()">☰</button>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="authorization">
+            <button class="square_button" onclick="toggleSidebar()">
+                <img class="close-icon" src="static/images/menu-toggle.png" style="display: block; width:35px; height:35px;" alt="Close Button">
+            </button>
+            <div class="Autorization_class">
+                <button class="Account" onclick="toggleAccount()">
+                    <img class="profile_icon" src="static/images/account_image.png" style="display: block; width:28px; height:28px;" alt="Profile Information">
+                </button>
+                <p>Welcome to <span class="style_text"><span class="style_text2">ReLife</span>PMT</span>, Username <span class="arrow-down">﹀</span></p>
+            </div>
+        </div>
+        <hr class="style_hr">
+        <div class="workspaces-section">
+            <h5>Активные рабочие пространства</h5>
+            <a href="#">🏠 Home developer page</a>
+            <a href="#">📋 Warehouse Tasks</a>
+            <a href="#" onclick="toggleWorkSpace()">➕ Добавить новое пространство</a>
+        </div>
+        <div class="projects-section">
+            <h5 class="mt-4">Текущие проекты</h5>
+            <a href="#">👑 Проект 1</a>
+            <a href="#">🎉 Проект 2</a>
+            <a href="#">🚀 Проект 3</a>
+            <a href="#" onclick="toggleProjects()">➕ Добавить новый проект</a>
+        </div>
+        <div class="tasks-section">
+            <h5 class="mt-4">Задачи</h5>
+            <a href="#">📋 Перейти к списку задач...</a>
+        </div>
+        <div class="settings-section">
+            <h5 class="mt-4">Настройки</h5>
+            <a href="html/Settings.html">⚙️ Настройки</a>
+            <a href="html/Templates.html">📝 Шаблоны</a>
+            <a href="html/Deleted.html">🗑️ Удалённое</a>
+        </div>
+        <!-- Добавляем больше элементов для теста -->
+        <div class="extra-links-section">
+            <h5 class="mt-4">Дополнительные ссылки</h5>
+            <a href="#">🔗 Ссылка 1</a>
+            <a href="#">🔗 Ссылка 2</a>
+            <a href="#">🔗 Ссылка 3</a>
+            <a href="#">🔗 Ссылка 4</a>
+            <a href="#">🔗 Ссылка 5</a>
+            <a href="#">🔗 Ссылка 6</a>
+            <a href="#">🔗 Ссылка 7</a>
+            <a href="#">🔗 Ссылка 8</a>
+            <a href="#">🔗 Ссылка 9</a>
+            <a href="#">🔗 Ссылка 10</a>
+        </div>
+    </div>
+
+    <div class="content-wrapper" id="content-wrapper">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Main Content -->
+                <div class="col-md-6 main-content">
+                    <h3>Твои проекты</h3>
+                    <div class="d-flex justify-content-between mb-3 test1">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Поиск проекта..." list="project-suggestions">
+                            <datalist id="project-suggestions"></datalist>
+                            <button class="btn btn-outline-secondary" onclick="searchProject()">🔍</button>
+                        </div>
+                        <button class="btn btn-warning find-now-btn" onclick="searchProject()">Найти сейчас</button>
+                    </div>
+
+                    <div class="project-add">
+                        <p>Добавить проект:</p>
+                        <button class="square_button" onclick="toggleAddProject()">+</button>
+                    </div>
+
+                    <div id="projects-container"></div>
+                </div>
+
+                <!-- Task List -->
+                <div class="col-md-3 task-list">
+                    <h3>Мои текущие задачи</h3>
+                    <div class="d-flex justify-content-between mb-3 test2">
+                        <div class="input-group" style="width: 300px;">
+                            <input type="text" class="form-control" placeholder="Поиск задачи..." list="task-suggestions">
+                            <datalist id="task-suggestions"></datalist>
+                            <button class="btn btn-outline-secondary" onclick="searchTask()">🔍</button>
+                        </div>
+                        <button class="btn btn-warning find-now-btn1" onclick="searchTask()">Поиск</button>
+                    </div>
+                    <div class="task-add">
+                        <p>Добавить задачу:</p>
+                        <button class="square_button" onclick="toggleAddTask()">+</button>
+                    </div>
+                    <div id="tasks-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer" id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Разделы:</h5>
+                    <div class="footer-links">
+                        <a href="html/Projects.html" class="footer-link">Проекты</a>
+                        <a href="html/Tasks.html" class="footer-link">Задачи</a>
+                        <a href="html/Projects_Settings.html" class="footer-link">Настройки проектов</a>
+                        <a href="html/Workspaces.html" class="footer-link">Рабочие пространства</a>
+                        <a href="html/Teams.html" class="footer-link">Участники проектов</a>
+                        <a href="html/AboutUs.html" class="footer-link">О нас</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5>Наши соцсети:</h5>
+                    <div class="socials-container">
+                        <a href="https://vk.com/relife_akadem" class="social-link" target="_blank">
+                            <img class="social-icon" src="static/images/vk_logo.png" alt="ВКонтакте">
+                            <span><u>VKontakte</u></span>
+                        </a>
+                        <a href="https://t.me/relife_eco" class="social-link" target="_blank">
+                            <img class="social-icon" src="static/images/telegram_logo.png" alt="Telegram">
+                            <span><u>Telegram</u></span>
+                        </a>
+                        <a href="https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Frelife_akadem%2F&is_from_rle" class="social-link" target="_blank">
+                            <img class="social-icon" src="static/images/instagram_logo.png" alt="Instagram">
+                            <span><u>Instagram</u></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="logo">
+                        <img src="static/images/ReLife.png" alt="ReLife Logo">
+                    </div>
+                    <div class="footer_text">
+                        <div class="footer-line">Наши <a href="#" class="footer-policy-link"><u>условия пользования и политика конфиденциальности</u></a></div>
+                        <div class="footer-line">© Все права защищены</div>
+                        <div class="footer-line">2025. Made By FAST_DEVELOP</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Данные проектов
+        // Данные проектов
+        const projectsData = [
+            {
+                name: { ru: "ПРОЕКТ 1", en: "Project 1" },
+                description: { ru: "Здесь будет некоторое описание проекта, для понимания, как он будет использоваться", en: "Here will be some project description to understand how it will be used" }
+            },
+            {
+                name: { ru: "ПРОЕКТ 2", en: "Project 2" },
+                description: { ru: "Здесь будет некоторое описание проекта, для понимания, как он будет использоваться", en: "Here will be some project description to understand how it will be used" }
+            },
+            {
+                name: { ru: "ПРОЕКТ 3", en: "Project 3" },
+                description: { ru: "Здесь будет некоторое описание проекта, для понимания, как он будет использоваться", en: "Here will be some project description to understand how it will be used" }
+            }
+        ];
+
+        // Данные задач
+        const tasksData = [
+            {
+                projectName: { ru: "ПРОЕКТ 1", en: "Project 1" },
+                name: { ru: "Перечень данных сайта для вывода заказов", en: "List of website data for displaying orders" },
+                description: { ru: "Перечень данных сайта для вывода заказов", en: "List of website data for displaying orders" }
+            },
+            {
+                projectName: { ru: "ПРОЕКТ 2", en: "Project 2" },
+                name: { ru: "Донести бота в Telegram для упрощения взаимодействия", en: "Implement a Telegram bot to simplify interaction" },
+                description: { ru: "Донести бота в Telegram для упрощения взаимодействия", en: "Implement a Telegram bot to simplify interaction" }
+            },
+            {
+                projectName: { ru: "ПРОЕКТ 3", en: "Project 3" },
+                name: { ru: "Отстроить микросервис на складе", en: "Set up a microservice at the warehouse" },
+                description: { ru: "Отстроить микросервис на складе", en: "Set up a microservice at the warehouse" }
+            },
+            {
+                projectName: { ru: "ПРОЕКТ 3", en: "Project 3" },
+                name: { ru: "Придумать способ передачи JWT-токенов на сервер", en: "Devise a method for transferring JWT tokens to the server" },
+                description: { ru: "Придумать способ передачи JWT-токенов на сервер", en: "Devise a method for transferring JWT tokens to the server" }
+            },
+            {
+                projectName: { ru: "ПРОЕКТ 3", en: "Project 3" },
+                name: { ru: "Придумать ещё проект", en: "Come up with another project" },
+                description: { ru: "Придумать ещё проект", en: "Come up with another project" }
+            }
+        ];
+
+        const translations = {
+            ru: {
+                welcome: "Welcome to <span class='style_text'><span class='style_text2'>ReLife</span>PMT</span>, ",
+                activeWorkspaces: "Активные рабочие пространства",
+                homeDevPage: "🏠 Home developer page",
+                warehouseTasks: "📋 Warehouse Tasks",
+                addWorkspace: "➕ Добавить новое пространство",
+                currentProjects: "Текущие проекты",
+                project1: "👑 Проект 1",
+                project2: "🎉 Проект 2",
+                project3: "🚀 Проект 3",
+                addProject: "➕ Добавить новый проект",
+                tasks: "Задачи",
+                taskList: "📋 Перейти к списку задач...",
+                settings: "Настройки",
+                settingsLink: "⚙️ Настройки",
+                templates: "📝 Шаблоны",
+                deleted: "🗑️ Удалённое",
+                extraLinks: "Дополнительные ссылки",
+                yourProjects: "Твои проекты",
+                searchProject: "Поиск проекта...",
+                findNow: "Найти сейчас",
+                addProjectText: "Добавить проект:",
+                myTasks: "Мои текущие задачи",
+                searchTask: "Поиск задачи...",
+                search: "Поиск",
+                addTask: "Добавить задачу:",
+                footerSections: "Разделы:",
+                footerProjects: "Проекты",
+                footerTasks: "Задачи",
+                footerProjectSettings: "Настройки проектов",
+                footerWorkspaces: "Рабочие пространства",
+                footerTeams: "Участники проектов",
+                footerAbout: "О нас",
+                socialMedia: "Наши соцсети:",
+                terms: "Наши <a href='#' class='footer-policy-link'><u>условия пользования и политика конфиденциальности</u></a>",
+                rights: "© Все права защищены",
+                madeBy: "2025. Made By FAST_DEVELOP",
+                projectDesc: "Здесь будет некоторое описание проекта, для понимания, как он будет использоваться",
+                task1: "Перечень данных сайта для вывода заказов",
+                task2: "Донести бота в Telegram для упрощения взаимодействия",
+                task3: "Отстроить микросервис на складе",
+                task4: "Придумать способ передачи JWT-токенов на сервер",
+                task5: "Придумать ещё проект",
+                goToProject: "Перейти к проекту...",
+                goToTask: "Перейти к выполнению...",
+                noProjectsFound: "Проекты не найдены.",
+                noTasksFound: "Задачи не найдены."
+            },
+            en: {
+                welcome: "Welcome to <span class='style_text'><span class='style_text2'>ReLife</span>PMT</span>, ",
+                activeWorkspaces: "Active Workspaces",
+                homeDevPage: "🏠 Home Developer Page",
+                warehouseTasks: "📋 Warehouse Tasks",
+                addWorkspace: "➕ Add New Workspace",
+                currentProjects: "Current Projects",
+                project1: "👑 Project 1",
+                project2: "🎉 Project 2",
+                project3: "🚀 Project 3",
+                addProject: "➕ Add New Project",
+                tasks: "Tasks",
+                taskList: "📋 Go to Task List...",
+                settings: "Settings",
+                settingsLink: "⚙️ Settings",
+                templates: "📝 Templates",
+                deleted: "🗑️ Deleted",
+                extraLinks: "Additional Links",
+                yourProjects: "Your Projects",
+                searchProject: "Search project...",
+                findNow: "Find Now",
+                addProjectText: "Add project:",
+                myTasks: "My Current Tasks",
+                searchTask: "Search task...",
+                search: "Search",
+                addTask: "Add task:",
+                footerSections: "Sections:",
+                footerProjects: "Projects",
+                footerTasks: "Tasks",
+                footerProjectSettings: "Project Settings",
+                footerWorkspaces: "Workspaces",
+                footerTeams: "Project Members",
+                footerAbout: "About Us",
+                socialMedia: "Our Social Media:",
+                terms: "Our <a href='#' class='footer-policy-link'><u>terms of use and privacy policy</u></a>",
+                rights: "© All rights reserved",
+                madeBy: "2025. Made By FAST_DEVELOP",
+                projectDesc: "Here will be some project description to understand how it will be used",
+                task1: "List of website data for displaying orders",
+                task2: "Implement a Telegram bot to simplify interaction",
+                task3: "Set up a microservice at the warehouse",
+                task4: "Devise a method for transferring JWT tokens to the server",
+                task5: "Come up with another project",
+                goToProject: "Go to project...",
+                goToTask: "Go to execution...",
+                noProjectsFound: "No projects found.",
+                noTasksFound: "No tasks found."
+            }
+        };
+
+        // Массив для хранения активных рабочих пространств
+        let workspaces = [
+            { name: "🏠 Home developer page", href: "#" },
+            { name: "📋 Warehouse Tasks", href: "#" }
+        ];
+
+        let projects = [
+            {name: "👑 Проект 1", href: "#" },
+            {name: "🎉 Проект 2", href: "#" },
+            {name: "🚀 Проект 3", href: "#" },
+        ];
+
+        function updateProjectSuggestions() {
+            const datalist = document.getElementById('project-suggestions');
+            const currentLang = document.querySelector('.translate_img button').getAttribute('data-lang') || 'ru';
+
+            // Очищаем текущие варианты
+            datalist.innerHTML = '';
+
+            // Собираем все возможные значения для автодополнения
+            const suggestions = new Set();
+            projectsData.forEach(project => {
+                if (project.name && project.name[currentLang]) {
+                    suggestions.add(project.name[currentLang]);
+                }
+                if (project.description && project.description[currentLang]) {
+                    suggestions.add(project.description[currentLang]);
+                }
+            });
+
+            // Добавляем варианты в datalist
+            suggestions.forEach(suggestion => {
+                const option = document.createElement('option');
+                option.value = suggestion;
+                datalist.appendChild(option);
+            });
+        }
+
+        function updateTaskSuggestions() {
+            const datalist = document.getElementById('task-suggestions');
+            const currentLang = document.querySelector('.translate_img button').getAttribute('data-lang') || 'ru';
+
+            // Очищаем текущие варианты
+            datalist.innerHTML = '';
+
+            // Собираем все возможные значения для автодополнения
+            const suggestions = new Set();
+            tasksData.forEach(task => {
+                if (task.projectName && task.projectName[currentLang]) {
+                    suggestions.add(task.projectName[currentLang]);
+                }
+                if (task.name && task.name[currentLang]) {
+                    suggestions.add(task.name[currentLang]);
+                }
+                if (task.description && task.description[currentLang]) {
+                    suggestions.add(task.description[currentLang]);
+                }
+            });
+
+            // Добавляем варианты в datalist
+            suggestions.forEach(suggestion => {
+                const option = document.createElement('option');
+                option.value = suggestion;
+                datalist.appendChild(option);
+            });
+        }
+
+
+        function renderSidebarProjects() {
+            const sidebar = document.getElementById('sidebar');
+            const projectSection = sidebar.querySelector('.projects-section');
+            const addProjectLink = projectSection.querySelector('a[onclick="toggleProjects()"]'); // Исправлено: toggleProjects
+
+            // Удаляем существующие ссылки проектов, кроме кнопки добавления
+            const existingLinks = projectSection.querySelectorAll('a:not([onclick="toggleProjects()"])');
+            existingLinks.forEach(link => link.remove());
+
+            // Добавляем проекты перед кнопкой добавления
+            projects.forEach(project => {
+                const newLink = document.createElement('a');
+                newLink.href = project.href;
+                newLink.textContent = project.name;
+                newLink.style.display = 'block';
+                newLink.style.marginBottom = '10px';
+                newLink.style.color = '#333';
+                newLink.style.textDecoration = 'none';
+                projectSection.insertBefore(newLink, addProjectLink);
+            });
+
+            // Пересчитываем высоту sidebar
+            adjustSidebarHeight();
+        }
+
+        function renderWorkspaces() {
+            const sidebar = document.getElementById('sidebar');
+            const workspaceSection = sidebar.querySelector('.workspaces-section'); // "Активные рабочие пространства"
+            const addWorkspaceLink = sidebar.querySelector('a[onclick="toggleWorkSpace()"]');
+            //
+            // // Удаляем существующие ссылки рабочих пространств, кроме кнопки добавления
+            const existingLinks = workspaceSection.querySelectorAll('a:not([onclick="toggleWorkSpace()"])');
+            existingLinks.forEach(link => link.remove());
+            //
+            // // Добавляем рабочие пространства перед кнопкой добавления
+            workspaces.forEach(workspace => {
+                const newLink = document.createElement('a');
+                newLink.href = workspace.href;
+                newLink.textContent = workspace.name;
+                newLink.style.display = 'block'; // Убедимся, что стили совпадают с CSS
+                newLink.style.marginBottom = '10px'; // Соответствует стилям в SCSS
+                newLink.style.color = '#333';
+                newLink.style.textDecoration = 'none';
+                // workspaceSection.insertAdjacentElement('afterend', newLink);
+                workspaceSection.insertBefore(newLink, addWorkspaceLink);
+            });
+            //
+            // // Пересчитываем высоту sidebar после добавления новых элементов
+            adjustSidebarHeight();
+        }
+
+        // Новая функция toggleWorkSpace
+        function toggleWorkSpace() {
+            const newWorkspaceName = prompt("Введите название нового рабочего пространства:");
+            if (newWorkspaceName) {
+                // Добавляем новое рабочее пространство в массив
+                workspaces.push({ name: `📌 ${newWorkspaceName}`, href: "#" });
+                // Перерисовываем список рабочих пространств
+                renderWorkspaces();
+            }
+        }
+
+        function toggleProjects() {
+            const newProjectName = prompt("Введите название нового проекта:");
+            if (newProjectName) {
+                // Добавляем новое рабочее пространство в массив
+                projects.push({ name: `📌 ${newProjectName}`, href: "#" });
+                // Перерисовываем список рабочих пространств
+                renderSidebarProjects();
+            }
+        }
+
+        function toggleTranslate() {
+            const button = document.querySelector('.translate_img button');
+            const currentLang = button.getAttribute('data-lang');
+            const newLang = currentLang === 'ru' ? 'en' : 'ru';
+            const username = "Username";
+
+            button.setAttribute('data-lang', newLang);
+
+            // Обновляем header
+            document.querySelector('.user-info .user-text').innerHTML =
+                `${translations[newLang].welcome}${username}`;
+            document.querySelector('.sidebar .Autorization_class p').innerHTML =
+                `${translations[newLang].welcome}${username} <span class="arrow-down">﹀</span>`;
+
+            // Обновляем sidebar
+            const sidebar = document.getElementById('sidebar');
+            // sidebar.querySelector('h5:nth-of-type(1)').textContent = translations[newLang].activeWorkspaces;
+            // sidebar.querySelector('a[onclick="toggleWorkSpace()"]').textContent = translations[newLang].addWorkspace;
+            // sidebar.querySelector('h5:nth-of-type(2)').textContent = translations[newLang].currentProjects;
+            // sidebar.querySelector('a:nth-of-type(4)').textContent = translations[newLang].project1;
+            // sidebar.querySelector('a:nth-of-type(5)').textContent = translations[newLang].project2;
+            // sidebar.querySelector('a:nth-of-type(6)').textContent = translations[newLang].project3;
+            // sidebar.querySelector('a:nth-of-type(7)').textContent = translations[newLang].addProject;
+            // sidebar.querySelector('h5:nth-of-type(3)').textContent = translations[newLang].tasks;
+            // sidebar.querySelector('a:nth-of-type(8)').textContent = translations[newLang].taskList;
+            // sidebar.querySelector('h5:nth-of-type(4)').textContent = translations[newLang].settings;
+            // sidebar.querySelector('a:nth-of-type(9)').textContent = translations[newLang].settingsLink;
+            // sidebar.querySelector('a:nth-of-type(10)').textContent = translations[newLang].templates;
+            // sidebar.querySelector('a:nth-of-type(11)').textContent = translations[newLang].deleted;
+            // sidebar.querySelector('h5:nth-of-type(5)').textContent = translations[newLang].extraLinks;
+            const workspaceSection = sidebar.querySelector('.workspaces-section');
+            const projectSection = sidebar.querySelector('.projects-section');
+            const tasksSection = sidebar.querySelector('.tasks-section');
+            const settingsSection = sidebar.querySelector('.settings-section');
+            const extraLinksSection = sidebar.querySelector('.extra-links-section');
+
+            // Обновляем заголовки и статические ссылки
+            workspaceSection.querySelector('h5').textContent = translations[newLang].activeWorkspaces;
+            workspaceSection.querySelector('a[onclick="toggleWorkSpace()"]').textContent = translations[newLang].addWorkspace;
+
+            projectSection.querySelector('h5').textContent = translations[newLang].currentProjects;
+            projectSection.querySelector('a[onclick="toggleProjects()"]').textContent = translations[newLang].addProject;
+
+            tasksSection.querySelector('h5').textContent = translations[newLang].tasks;
+            tasksSection.querySelector('a').textContent = translations[newLang].taskList;
+
+            settingsSection.querySelector('h5').textContent = translations[newLang].settings;
+            settingsSection.querySelector('a:nth-of-type(1)').textContent = translations[newLang].settingsLink;
+            settingsSection.querySelector('a:nth-of-type(2)').textContent = translations[newLang].templates;
+            settingsSection.querySelector('a:nth-of-type(3)').textContent = translations[newLang].deleted;
+
+            extraLinksSection.querySelector('h5').textContent = translations[newLang].extraLinks;
+
+            // Обновляем основной контент
+            document.querySelector('.main-content h3').textContent = translations[newLang].yourProjects;
+            document.querySelector('.main-content input').placeholder = translations[newLang].searchProject;
+            document.querySelector('.main-content .find-now-btn').textContent = translations[newLang].findNow;
+            document.querySelector('.project-add p').textContent = translations[newLang].addProjectText;
+
+            document.querySelector('.task-list h3').textContent = translations[newLang].myTasks;
+            document.querySelector('.task-list input').placeholder = translations[newLang].searchTask;
+            document.querySelector('.task-list .find-now-btn1').textContent = translations[newLang].search;
+            document.querySelector('.task-add p').textContent = translations[newLang].addTask;
+
+            // Обновляем футер
+            const footer = document.querySelector('.footer');
+            const footerLeftColumn = footer.querySelector('.col-md-4:nth-child(1)');
+            footerLeftColumn.querySelector('h5').textContent = translations[newLang].footerSections;
+            const footerLinks = footerLeftColumn.querySelectorAll('.footer-links a');
+            footerLinks[0].textContent = translations[newLang].footerProjects;
+            footerLinks[1].textContent = translations[newLang].footerTasks;
+            footerLinks[2].textContent = translations[newLang].footerProjectSettings;
+            footerLinks[3].textContent = translations[newLang].footerWorkspaces;
+            footerLinks[4].textContent = translations[newLang].footerTeams;
+            footerLinks[5].textContent = translations[newLang].footerAbout;
+
+            const footerMiddleColumn = footer.querySelector('.col-md-4:nth-child(2)');
+            footerMiddleColumn.querySelector('h5').textContent = translations[newLang].socialMedia; // Всегда на русском
+            const socialLinks = footerMiddleColumn.querySelectorAll('.socials-container .social-link span');
+            socialLinks[0].innerHTML = "<u>VKontakte</u>";
+            socialLinks[1].innerHTML = "<u>Telegram</u>";
+            socialLinks[2].innerHTML = "<u>Instagram</u>";
+
+            const footerRightColumn = footer.querySelector('.col-md-4:nth-child(3)');
+            const footerLines = footerRightColumn.querySelectorAll('.footer_text .footer-line');
+            if (newLang === 'en') {
+                footerLines[0].innerHTML = `Our <a href="#" class="footer-policy-link"><u>terms of use and privacy policy</u></a>`;
+            } else {
+                footerLines[0].innerHTML = `Наши <a href="#" class="footer-policy-link"><u>условия пользования и политика конфиденциальности</u></a>`;
+            }
+            footerLines[1].textContent = translations[newLang].rights;
+            footerLines[2].textContent = translations[newLang].madeBy;
+
+            // Обновляем данные проектов и задач
+            // projectsData.forEach((project, index) => {
+            //     project.description = translations[newLang].projectDesc;
+            // });
+            // tasksData[0].name = tasksData[0].description = translations[newLang].task1;
+            // tasksData[1].name = tasksData[1].description = translations[newLang].task2;
+            // tasksData[2].name = tasksData[2].description = translations[newLang].task3;
+            // tasksData[3].name = tasksData[3].description = translations[newLang].task4;
+            // tasksData[4].name = tasksData[4].description = translations[newLang].task5;
+
+            // Перерисовываем все динамические элементы
+            renderSidebarProjects();
+            renderWorkspaces();
+            renderProjects();
+            renderTasks();
+
+            // Обновляем текст кнопок в карточках
+            document.querySelectorAll('.project-card .btn').forEach(btn => {
+                btn.textContent = translations[newLang].goToProject;
+            });
+            document.querySelectorAll('.task-item .btn').forEach(btn => {
+                btn.textContent = translations[newLang].goToTask;
+            });
+
+            // Обновляем подсказки после перевода
+            updateProjectSuggestions();
+            updateTaskSuggestions();
+            // Пересчитываем высоту sidebar после перевода
+            adjustSidebarHeight();
+        }
+
+        function renderProjects() {
+            const container = document.getElementById('projects-container');
+            const currentLang = document.querySelector('.translate_img button').getAttribute('data-lang') || 'ru';
+            if (projectsData.length === 0) {
+                container.innerHTML = `<p>${translations[currentLang].noProjectsFound}</p>`;
+                return;
+            }
+
+            container.innerHTML = projectsData.map(project => {
+                const name = project.name && project.name[currentLang] ? project.name[currentLang] : 'Unnamed Project';
+                const description = project.description && project.description[currentLang] ? project.description[currentLang] : 'No description';
+                return `
+            <div class="project-card">
+                <img src="static/images/no_image.png" style="display: block; width:358px; height:192px;" alt="Нет изображения...">
+                <div class="project-details">
+                    <h4>${name}</h4>
+                    <p>${description}</p>
+                    <button class="btn btn-primary" onclick="checkProject()">${translations[currentLang].goToProject}</button>
+                </div>
+            </div>
+        `;
+            }).join('');
+
+            // Обновляем подсказки после рендеринга
+            updateProjectSuggestions();
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('tasks-container');
+            const currentLang = document.querySelector('.translate_img button').getAttribute('data-lang') || 'ru';
+            if (tasksData.length === 0) {
+                container.innerHTML = `<p>${translations[currentLang].noTasksFound}</p>`;
+                return;
+            }
+
+            container.innerHTML = tasksData.map(task => {
+                const projectName = task.projectName && task.projectName[currentLang] ? task.projectName[currentLang] : 'Unknown Project';
+                const name = task.name && task.name[currentLang] ? task.name[currentLang] : 'Unnamed Task';
+                const description = task.description && task.description[currentLang] ? task.description[currentLang] : 'No description';
+                return `
+            <div class="task-item">
+                <p><strong><span>Project</span>: ${projectName}</strong></p>
+                <p><span>Task</span>: ${name}</p>
+                <p>${description}</p>
+                <button class="btn btn-success" onclick="checkTask()">${translations[currentLang].goToTask}</button>
+            </div>
+        `;
+            }).join('');
+
+            // Обновляем подсказки после рендеринга
+            updateTaskSuggestions();
+        }
+        // Инициализация
+        renderSidebarProjects();
+        renderWorkspaces();
+        renderProjects();
+        renderTasks();
+
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const contentWrapper = document.getElementById('content-wrapper');
+            if (sidebar && contentWrapper) {
+                sidebar.classList.toggle('active');
+                contentWrapper.classList.toggle('active');
+                adjustSidebarHeight();
+                console.log('Sidebar toggled, active:', sidebar.classList.contains('active')); // Отладка
+            } else {
+                console.error('One of the elements (sidebar, contentWrapper, header) not found');
+            }
+        }
+
+        function toggleAddProject() {
+            const projectName = prompt("Введите название нового проекта:");
+            if (!projectName) {
+                alert("Название проекта не должно быть пустым!");
+                return;
+            }
+
+            const projectDescription = prompt("Введите описание проекта:");
+            if (!projectDescription) {
+                alert("Описание проекта не может быть пустым!");
+                return;
+            }
+
+            projectsData.push({
+                name: { ru: projectName, en: projectName }, // Одинаковый текст для обоих языков
+                description: { ru: projectDescription, en: projectDescription }
+            });
+            saveProjects();
+            renderProjects();
+        }
+
+        function toggleAddTask() {
+            if (projectsData.length === 0) {
+                alert("Нужно добавить хотя бы один проект!");
+                return;
+            }
+
+            const projectNames = projectsData.map((project, index) => `${index + 1}. ${project.name.ru}`).join("\n");
+            const projectIndex = prompt(`Выберите проект для задачи (введите номер):\n${projectNames}`);
+            const selectedIndex = parseInt(projectIndex) - 1;
+
+            if (isNaN(selectedIndex) || selectedIndex < 0 || selectedIndex >= projectsData.length) {
+                alert("Неверный выбор проекта!");
+                return;
+            }
+
+            const selectedProject = projectsData[selectedIndex];
+
+            const taskName = prompt("Введите название задачи:");
+            if (!taskName) {
+                alert("Название задачи не может быть пустым!");
+                return;
+            }
+
+            const taskDescription = prompt("Введите описание задачи:");
+            if (!taskDescription) {
+                alert("Описание задачи не может быть пустым!");
+                return;
+            }
+
+            tasksData.push({
+                projectName: selectedProject.name, // Сохраняем объект с переводами
+                name: { ru: taskName, en: taskName },
+                description: { ru: taskDescription, en: taskDescription }
+            });
+            saveTasks();
+            renderTasks();
+        }
+
+        function toggleAccount() {
+            alert("В данный момент функция профился пока не реализована.");
+        }
+
+        function checkTask() {
+            alert("Функция просмотра задачи пока не реализована.");
+        }
+
+        function checkProject() {
+            alert("Функция просмотра проекта пока не реализована.");
+        }
+
+        function searchProject() {
+            const searchInput = document.querySelector('.main-content input').value.toLowerCase();
+            const currentLang = document.querySelector('.translate_img button').getAttribute('data-lang') || 'ru';
+
+            // Фильтруем проекты
+            const filteredProjects = projectsData.filter(project => {
+                const name = project.name && project.name[currentLang] ? project.name[currentLang].toLowerCase() : '';
+                const description = project.description && project.description[currentLang] ? project.description[currentLang].toLowerCase() : '';
+                return name.includes(searchInput) || description.includes(searchInput);
+            });
+
+            // Перерисовываем отфильтрованный список
+            const container = document.getElementById('projects-container');
+            if (filteredProjects.length === 0) {
+                container.innerHTML = `<p>${translations[currentLang].noProjectsFound}</p>`;
+                return;
+            }
+
+            container.innerHTML = filteredProjects.map(project => {
+                const name = project.name && project.name[currentLang] ? project.name[currentLang] : 'Unnamed Project';
+                const description = project.description && project.description[currentLang] ? project.description[currentLang] : 'No description';
+                return `
+            <div class="project-card">
+                <img src="static/images/no_image.png" style="display: block; width:358px; height:192px;" alt="Нет изображения...">
+                <div class="project-details">
+                    <h4>${name}</h4>
+                    <p>${description}</p>
+                    <button class="btn btn-primary" onclick="checkProject()">${translations[currentLang].goToProject}</button>
+                </div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        function searchTask() {
+            const searchInput = document.querySelector('.task-list input').value.toLowerCase();
+            const currentLang = document.querySelector('.translate_img button').getAttribute('data-lang') || 'ru';
+
+            // Фильтруем задачи
+            const filteredTasks = tasksData.filter(task => {
+                const projectName = task.projectName && task.projectName[currentLang] ? task.projectName[currentLang].toLowerCase() : '';
+                const name = task.name && task.name[currentLang] ? task.name[currentLang].toLowerCase() : '';
+                const description = task.description && task.description[currentLang] ? task.description[currentLang].toLowerCase() : '';
+                return projectName.includes(searchInput) || name.includes(searchInput) || description.includes(searchInput);
+            });
+
+            // Перерисовываем отфильтрованный список
+            const container = document.getElementById('tasks-container');
+            if (filteredTasks.length === 0) {
+                container.innerHTML = `<p>${translations[currentLang].noTasksFound}</p>`;
+                return;
+            }
+
+            container.innerHTML = filteredTasks.map(task => {
+                const projectName = task.projectName && task.projectName[currentLang] ? task.projectName[currentLang] : 'Unknown Project';
+                const name = task.name && task.name[currentLang] ? task.name[currentLang] : 'Unnamed Task';
+                const description = task.description && task.description[currentLang] ? task.description[currentLang] : 'No description';
+                return `
+            <div class="task-item">
+                <p><strong><span>Project</span>: ${projectName}</strong></p>
+                <p><span>Task</span>: ${name}</p>
+                <p>${description}</p>
+                <button class="btn btn-success" onclick="checkTask()">${translations[currentLang].goToTask}</button>
+            </div>
+        `;
+            }).join('');
+        }
+
+        // Флаг для отслеживания скролла
+        let isScrolling = false;
+
+        window.addEventListener('scroll', () => {
+            isScrolling = true;
+            setTimeout(() => {
+                isScrolling = false;
+            }, 400);
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                if (sidebar.classList.contains('active')) {
+                    console.log('Scroll detected, closing Sidebar'); // Отладка
+                    toggleSidebar(); // Закрываем Sidebar, если он открыт
+                }
+                else {
+                    console.log('Scroll not detected, closing Sidebar'); // Отладка
+                }
+            }
+            else {
+                console.error('Sidebar element not found');
+            }
+        });
+
+        // Обработчик клика для закрытия Sidebar
+        document.addEventListener('click', (event) => {
+            const sidebar = document.getElementById('sidebar');
+            const burgerMenu = document.querySelector('.burger-menu');
+            if (sidebar && burgerMenu) {
+                if (sidebar.classList.contains('active') && !sidebar.contains(event.target) && !burgerMenu.contains(event.target)) {
+                    console.log('Click outside Sidebar, closing'); // Отладка
+                    toggleSidebar();
+                }
+            } else {
+                console.error('Sidebar or burgerMenu element not found');
+            }
+        });
+
+
+        // Динамическая высота Sidebar
+        function adjustSidebarHeight() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) {
+                const headerHeight = 60; // $header-height
+                const windowHeight = window.innerHeight;
+                const maxHeight = windowHeight - headerHeight - 70; // Учитываем bottom: 70px
+                sidebar.style.maxHeight = `${maxHeight}px`;
+                sidebar.style.height = 'auto'; // Позволяем Sidebar подстраиваться под содержимое
+                console.log('Sidebar height adjusted, maxHeight:', maxHeight); // Отладка
+            } else {
+                console.error('Sidebar element not found');
+            }
+        }
+
+        window.addEventListener('resize', adjustSidebarHeight);
+        window.addEventListener('load', adjustSidebarHeight);
+
+        // Сохранение проектов
+        // Сохранение проектов
+        function saveProjects() {
+            localStorage.setItem('projectsData', JSON.stringify(projectsData));
+        }
+
+        // Загрузка проектов
+        function loadProjects() {
+            const savedProjects = localStorage.getItem('projectsData');
+            if (savedProjects) {
+                console.log('Loaded projects from localStorage:', JSON.parse(savedProjects));
+                const parsedProjects = JSON.parse(savedProjects);
+                // Очищаем projectsData, чтобы избежать дублирования
+                projectsData.length = 0;
+                // Добавляем данные, преобразуя их в правильный формат
+                projectsData.push(...parsedProjects.map(project => {
+                    // Если name и description уже в формате объекта { ru, en }, оставляем как есть
+                    if (typeof project.name === 'object' && project.name.ru && project.name.en) {
+                        return project;
+                    }
+                    // Если name и description — строки (старый формат), преобразуем
+                    return {
+                        name: { ru: project.name, en: project.name },
+                        description: { ru: project.description, en: project.description }
+                    };
+                }));
+            }
+        }
+
+        // Сохранение задач
+        function saveTasks() {
+            localStorage.setItem('tasksData', JSON.stringify(tasksData));
+        }
+
+        // Загрузка задач
+        function loadTasks() {
+            const savedTasks = localStorage.getItem('tasksData');
+            if (savedTasks) {
+                console.log('Loaded tasks from localStorage:', JSON.parse(savedTasks));
+                const parsedTasks = JSON.parse(savedTasks);
+                // Очищаем tasksData, чтобы избежать дублирования
+                tasksData.length = 0;
+                // Добавляем данные, преобразуя их в правильный формат
+                tasksData.push(...parsedTasks.map(task => {
+                    // Если projectName, name и description уже в формате объекта { ru, en }, оставляем как есть
+                    if (typeof task.projectName === 'object' && task.projectName.ru && task.projectName.en) {
+                        return task;
+                    }
+                    // Если projectName, name и description — строки (старый формат), преобразуем
+                    return {
+                        projectName: { ru: task.projectName, en: task.projectName },
+                        name: { ru: task.name, en: task.name },
+                        description: { ru: task.description, en: task.description }
+                    };
+                }));
+            }
+        }
+
+        document.querySelector('.main-content input').addEventListener('input', searchProject);
+        document.querySelector('.task-list input').addEventListener('input', searchTask);
+
+        // Очистка localStorage (выполнить один раз, затем закомментировать)
+        // localStorage.removeItem('projectsData');
+        // localStorage.removeItem('tasksData');
+        // Инициализация при загрузке страницы
+        window.addEventListener('load', () => {
+            loadProjects();
+            loadTasks();
+            renderSidebarProjects();
+            renderWorkspaces();
+            renderProjects();
+            renderTasks();
+            updateTaskSuggestions();
+            updateProjectSuggestions();
+            adjustSidebarHeight();
+        });
+
+
+    </script>
+</body>
+</html>

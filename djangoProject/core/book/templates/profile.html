@@ -1,0 +1,104 @@
+{% load jsonify %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - ReLife PMT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/ProfilePage.css' %}">
+</head>
+<body>
+    <div class="header">
+        <div class="user-info">
+            <button class="btn btn-primary" onclick="toggleAccount()" data-is-authenticated="{{ is_authenticated|yesno:'true,false' }}">
+                {% if profile_photo %}
+                    <img class="profile_icon" src="{{ profile_photo }}" style="display: block; width:28px; height:28px;" alt="Profile Information">
+                {% else %}
+                    <img class="profile_icon" src="{% static 'images/account_image.png' %}" style="display: block; width:28px; height:28px;" alt="Profile Information">
+                {% endif %}
+            </button>
+            <span class="user-text">Welcome to <span class="style_text"><span class="style_text2">ReLife</span>PMT</span>, {{ username }}</span>
+        </div>
+        <div class="logo">
+            <img src="{% static 'images/ReLife.png' %}" alt="ReLife Logo">
+        </div>
+        <div class="translate_img">
+            <button class="btn btn-primary translate-btn" data-lang="ru">
+                <img src="{% static 'images/translate.png' %}" alt="Translate">
+            </button>
+        </div>
+        <div>
+            <button class="btn btn-primary burger-menu">☰</button>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="authorization">
+            <button class="square_button sidebar-toggle-btn">
+                <img class="close-icon" src="{% static 'images/menu-toggle.png' %}" style="display: block; width:35px; height:35px;" alt="Close Button">
+            </button>
+            <div class="Autorization_class">
+                <button class="Account" onclick="toggleAccount()" data-is-authenticated="{{ is_authenticated|yesno:'true,false' }}">
+                    {% if profile_photo %}
+                        <img class="profile_icon" src="{{ profile_photo }}" style="display: block; width:28px; height:28px;" alt="Profile Information">
+                    {% else %}
+                        <img class="profile_icon" src="{% static 'images/account_image.png' %}" style="display: block; width:28px; height:28px;" alt="Profile Information">
+                    {% endif %}
+                </button>
+                <p>Welcome to <span class="style_text"><span class="style_text2">ReLife</span>PMT</span>, {{ username }} <span class="arrow-down">﹀</span></p>
+            </div>
+        </div>
+        <hr class="style_hr">
+        <div class="workspaces-section">
+            <h5>Активные рабочие пространства</h5>
+            <a href="#">🏠 Home developer page</a>
+            <a href="#">📋 Warehouse Tasks</a>
+            <a href="#" onclick="toggleWorkSpace()">➕ Добавить новое пространство</a>
+        </div>
+        <div class="projects-section">
+            <h5 class="mt-4">Текущие проекты</h5>
+            <a href="#" onclick="toggleAddProject()">➕ Добавить новый проект</a>
+        </div>
+        <div class="tasks-section">
+            <h5 class="mt-4">Задачи</h5>
+            <a href="{% url 'Tasks' %}">📋 Перейти к списку задач...</a>
+        </div>
+        <div class="settings-section">
+            <h5 class="mt-4">Настройки</h5>
+            <a href="{% url 'Settings' %}">⚙️ Настройки</a>
+            <a href="{% url 'Templates' %}">📝 Шаблоны</a>
+            <a href="{% url 'deleted' %}">🗑️ Удалённое</a>
+        </div>
+    </div>
+
+    <div class="profile-wrapper">
+        <div class="profile-container">
+            <h2>Ваш профиль</h2>
+            {% if profile_photo %}
+                <img id="profile-photo" src="{{ profile_photo }}" alt="Profile Photo" class="profile-photo">
+            {% else %}
+                <img id="profile-photo" src="{% static 'images/account_image.png' %}" alt="Profile Photo" class="profile-photo">
+            {% endif %}
+            <form class="profile-form" onsubmit="saveProfile(event)">
+                {% csrf_token %}
+                <label for="username-input">Имя пользователя:</label>
+                <input type="text" id="username-input" value="{{ username }}" required>
+
+                <label for="photo-input">Фото профиля:</label>
+                <input type="file" id="photo-input" accept="image/*">
+
+                <div class="button-wrapper">
+                    <button type="submit" class="save-button">Сохранить изменения</button>
+                    <div class="sparkle-container"></div>
+                    <div class="rays-container"></div>
+                </div>
+            </form>
+            <p id="error-message" class="error-message"></p>
+        </div>
+    </div>
+    <script id="token-data" type="application/json" data-token="{{ token_data|jsonify_inline|default:'{}' }}"></script>
+    <script src="{% static 'js/relife_dashboard.js' %}"></script>
+</body>
+</html>

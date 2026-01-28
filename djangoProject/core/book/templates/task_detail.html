@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Detail - {{ task.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/RelifeDashboard.css' %}">
+    <script src="{% static 'js/relife_dashboard.js' %}" defer></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 id="task-title">Задача: {{ task.name }}</h1>
+
+        <div class="mt-4">
+            <button class="btn btn-primary" onclick="editTask({{ task.id }})">Редактировать задачу</button>
+        </div>
+
+        <h2 class="mt-4">Информация о задаче</h2>
+        <table class="table table-bordered mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Название</th>
+                    <th>Описание</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="task-name-display">{{ task.name }}</td>
+                    <td id="task-description-display">{{ task.description }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="mt-4">Информация о проекте</h2>
+        <table class="table table-bordered mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Название проекта</th>
+                    <th>Описание</th>
+                    <th>Изображение</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ task.project.name }}</td>
+                    <td>{{ task.project.description }}</td>
+                    <td>
+                        <img src="{% if task.project.image %}{{ task.project.image.url }}{% else %}{% static 'images/no_img.png' %}{% endif %}" alt="Изображение проекта" style="max-width: 150px; height: auto;">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="mt-4">
+            <a href="{% url 'Tasks' %}" class="btn btn-primary">Вернуться к задачам</a>
+            <form method="POST" action="{% url 'task_detail' task.id %}" onsubmit="return confirm('Вы уверены, что хотите удалить эту задачу?');" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <button type="submit" class="btn btn-danger">Удалить задачу</button>
+            </form>
+        </div>
+    </div>
+    <input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await loadTasksFromServer();
+        });
+
+        if (!document.cookie.includes('csrftoken')) {
+            document.cookie = `csrftoken=${document.getElementById('csrf-token').value}; path=/`;
+        }
+
+        function editTask(taskId) {
+            const task = tasksData.find(t => t.id === parseInt(taskId));
+            if (!task) {
+                alert('Задача не найдена!');
+                return;
+            }
+
+            // Создаём модальное окно
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.style.display = 'block';
+            modal.style.position = 'fixed';
+            modal.style.zIndex = '1000';
+            modal.style.left = '0';
+            modal.style.top = '0';
+            modal.style.width = '100%';
+            modal.style.height = '100%';
+            modal.style.overflow = 'auto';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.4)';
+
+            const modalContent = document.createElement('div');
+            modalContent.style.backgroundColor = '#fefefe';
+            modalContent.style.margin = '15% auto';
+            modalContent.style.padding = '20px';
+            modalContent.style.border = '1px solid #888';
+            modalContent.style.width = '80%';
+            modalContent.style.maxWidth = '500px';
+            modalContent.style.borderRadius = '5px';
+
+            const closeButton = document.createElement('span');
+            closeButton.innerHTML = '×';
+            closeButton.style.color = '#aaa';
+            closeButton.style.float = 'right';
+            closeButton.style.fontSize = '28px';
+            closeButton.style.fontWeight = 'bold';
+            closeButton.style.cursor = 'pointer';
+
+            const form = document.createElement('form');
+            form.id = 'edit-task-form';
+            form.enctype = 'multipart/form-data';
+
+            const title = document.createElement('h2');
+            title.textContent = 'Редактировать задачу';
+            title.style.marginBottom = '20px';
+
+            const nameLabel = document.createElement('label');
+            nameLabel.textContent = translations[currentLang].taskNameLabel;
+            nameLabel.style.display = 'block';
+            nameLabel.style.marginBottom = '5px';
+
+            const nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.name = 'name';
+            nameInput.className = 'form-control';
+            nameInput.value = task.name[currentLang] || '';
+            nameInput.style.marginBottom = '15px';
+            nameInput.required = true;
+
+            const descriptionLabel = document.createElement('label');
+            descriptionLabel.textContent = translations[currentLang].taskDescriptionLabel;
+            descriptionLabel.style.display = 'block';
+            descriptionLabel.style.marginBottom = '5px';
+
+            const descriptionInput = document.createElement('textarea');
+            descriptionInput.name = 'description';
+            descriptionInput.className = 'form-control';
+            descriptionInput.rows = '3';
+            descriptionInput.value = task.description[currentLang] || '';
+            descriptionInput.style.marginBottom = '15px';
+            descriptionInput.required = true;
+
+            const saveButton = document.createElement('button');
+            saveButton.type = 'submit';
+            saveButton.className = 'btn btn-success';
+            saveButton.textContent = translations[currentLang].saveButton;
+            saveButton.style.marginRight = '10px';
+
+            const cancelButton = document.createElement('button');
+            cancelButton.type = 'button';
+            cancelButton.className = 'btn btn-secondary';
+            cancelButton.textContent = translations[currentLang].cancelButton;
+
+            form.appendChild(title);
+            form.appendChild(nameLabel);
+            form.appendChild(nameInput);
+            form.appendChild(descriptionLabel);
+            form.appendChild(descriptionInput);
+            form.appendChild(saveButton);
+            form.appendChild(cancelButton);
+
+            modalContent.appendChild(closeButton);
+            modalContent.appendChild(form);
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+
+            // Обработчики событий
+            closeButton.onclick = function() {
+                modal.remove();
+            };
+
+            cancelButton.onclick = function() {
+                modal.remove();
+            };
+
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.remove();
+                }
+            };
+
+            form.onsubmit = async function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetchWithCsrf(`/api/tasks/${taskId}/update/`, {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Задача успешно обновлена!');
+                        // Обновляем данные на странице
+                        document.getElementById('task-title').textContent = `Задача: ${formData.get('name')}`;
+                        document.getElementById('task-name-display').textContent = formData.get('name');
+                        document.getElementById('task-description-display').textContent = formData.get('description');
+                        // Обновляем tasksData
+                        const taskIndex = tasksData.findIndex(t => t.id === parseInt(taskId));
+                        if (taskIndex !== -1) {
+                            tasksData[taskIndex].name[currentLang] = formData.get('name');
+                            tasksData[taskIndex].description[currentLang] = formData.get('description');
+                        }
+                        modal.remove();
+                    } else {
+                        alert(`Ошибка при обновлении задачи: ${data.error}`);
+                    }
+                } catch (error) {
+                    console.error('Error updating task:', error);
+                    alert('Произошла ошибка при обновлении задачи: ' + error.message);
+                }
+            };
+        }
+    </script>
+</body>
+</html>

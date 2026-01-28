@@ -1,0 +1,20 @@
+FROM alpine:3.18 AS curl-provider
+
+RUN apk add --no-cache curl && \
+    apk add --no-cache zlib && \
+    apk add --no-cache libidn2 && \
+    apk add --no-cache nghttp2-libs && \
+    apk add --no-cache libpsl && \
+    apk add --no-cache brotli-libs && \
+    apk add --no-cache openssl && \
+    echo "Finding libraries..." && \
+    find / -name "libz.so*" 2>/dev/null > /tmp/libs_z.txt && \
+    find / -name "libssl.so*" 2>/dev/null > /tmp/libs_ssl.txt && \
+    find / -name "libcrypto.so*" 2>/dev/null > /tmp/libs_crypto.txt && \
+    find / -name "libidn2.so*" 2>/dev/null > /tmp/libs_idn2.txt && \
+    find / -name "libnghttp2.so*" 2>/dev/null > /tmp/libs_nghttp2.txt && \
+    find / -name "libpsl.so*" 2>/dev/null > /tmp/libs_psl.txt && \
+    find / -name "libbrotlidec.so*" 2>/dev/null > /tmp/libs_brotlidec.txt && \
+    find / -name "libbrotlicommon.so*" 2>/dev/null > /tmp/libs_brotlicommon.txt
+
+CMD ["cat", "/tmp/libs_z.txt", "/tmp/libs_ssl.txt", "/tmp/libs_crypto.txt", "/tmp/libs_idn2.txt", "/tmp/libs_nghttp2.txt", "/tmp/libs_psl.txt", "/tmp/libs_brotlidec.txt", "/tmp/libs_brotlicommon.txt"]

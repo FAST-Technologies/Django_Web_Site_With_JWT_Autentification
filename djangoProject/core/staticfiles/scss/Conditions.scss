@@ -1,0 +1,49 @@
+// Conditions.scss
+$primary-font: Arial, sans-serif;
+$container-bg: #f8f9fa;
+$card-bg: white;
+$text-color: #333;
+$subtext-color: #555;
+$link-color: #007bff;
+$shadow-color: rgba(0, 0, 0, 0.1);
+
+body {
+    font-family: $primary-font;
+    background-color: $container-bg;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: $card-bg;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px $shadow-color;
+
+    h1,
+    h2 {
+        color: $text-color;
+    }
+
+    p {
+        line-height: 1.6;
+        color: $subtext-color;
+    }
+}
+
+.translate-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+.back-link {
+    display: block;
+    margin-bottom: 20px;
+    color: $link-color;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

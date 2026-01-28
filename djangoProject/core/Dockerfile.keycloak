@@ -1,0 +1,41 @@
+# Этап 1: Получение curl и всех зависимостей из промежуточного образа
+FROM alpine:3.18 AS curl-provider
+
+RUN apk add --no-cache curl && \
+    apk add --no-cache libcurl && \
+    apk add --no-cache zlib && \
+    apk add --no-cache libidn2 && \
+    apk add --no-cache nghttp2-libs && \
+    apk add --no-cache libpsl && \
+    apk add --no-cache brotli-libs && \
+    apk add --no-cache openssl && \
+    apk add --no-cache libunistring
+
+# Этап 2: Основной образ Keycloak
+FROM quay.io/keycloak/keycloak:23.0
+
+# Копирование curl и всех зависимостей
+COPY --from=curl-provider /usr/bin/curl /usr/bin/curl
+COPY --from=curl-provider /lib/ld-musl-x86_64.so.1 /lib/ld-musl-x86_64.so.1
+COPY --from=curl-provider /usr/lib/libcurl.so.4 /usr/lib/libcurl.so.4
+COPY --from=curl-provider /lib/libz.so.1 /usr/lib/libz.so.1
+COPY --from=curl-provider /lib/libz.so.1.2.13 /usr/lib/libz.so.1.2.13
+COPY --from=curl-provider /usr/lib/libssl.so.3 /usr/lib/libssl.so.3
+COPY --from=curl-provider /usr/lib/libcrypto.so.3 /usr/lib/libcrypto.so.3
+COPY --from=curl-provider /usr/lib/libidn2.so.0.3.8 /usr/lib/libidn2.so.0.3.8
+COPY --from=curl-provider /usr/lib/libidn2.so.0 /usr/lib/libidn2.so.0
+COPY --from=curl-provider /usr/lib/libnghttp2.so.14.25.0 /usr/lib/libnghttp2.so.14.25.0
+COPY --from=curl-provider /usr/lib/libnghttp2.so.14 /usr/lib/libnghttp2.so.14
+COPY --from=curl-provider /usr/lib/libpsl.so.5 /usr/lib/libpsl.so.5
+COPY --from=curl-provider /usr/lib/libpsl.so.5.3.5 /usr/lib/libpsl.so.5.3.5
+COPY --from=curl-provider /usr/lib/libbrotlidec.so.1 /usr/lib/libbrotlidec.so.1
+COPY --from=curl-provider /usr/lib/libbrotlidec.so.1.0.9 /usr/lib/libbrotlidec.so.1.0.9
+COPY --from=curl-provider /usr/lib/libbrotlicommon.so.1 /usr/lib/libbrotlicommon.so.1
+COPY --from=curl-provider /usr/lib/libbrotlicommon.so.1.0.9 /usr/lib/libbrotlicommon.so.1.0.9
+COPY --from=curl-provider /usr/lib/libunistring.so.5 /usr/lib/libunistring.so.5
+
+# Копирование сертификатов
+COPY certs /opt/keycloak/certs
+
+# Команда запуска
+CMD ["start-dev"]

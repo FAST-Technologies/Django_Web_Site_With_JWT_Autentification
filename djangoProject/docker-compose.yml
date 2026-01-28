@@ -1,0 +1,171 @@
+services:
+ db-dev:
+   image: postgres:17
+   environment:
+     POSTGRES_DB: "dockerdjango"
+     POSTGRES_USER: "dbuser"
+     POSTGRES_PASSWORD: "dbpassword"
+   ports:
+     - "5432:5432"
+   volumes:
+     - postgres_data:/var/lib/postgresql/data
+   healthcheck:
+     test: [ "CMD-SHELL", "pg_isready -U dbuser -d dockerdjango" ]
+     interval: 10s
+     timeout: 5s
+     retries: 5
+   networks:
+     - app-network
+   profiles:
+      - dev
+
+ db-prod:
+   image: postgres:17
+   environment:
+     POSTGRES_DB: "dockerdjango"
+     POSTGRES_USER: "dbuser"
+     POSTGRES_PASSWORD: "dbpassword"
+   ports:
+     - "5432:5432"
+   volumes:
+     - postgres_data:/var/lib/postgresql/data
+   healthcheck:
+     test: [ "CMD-SHELL", "pg_isready -U dbuser -d dockerdjango" ]
+     interval: 10s
+     timeout: 5s
+     retries: 5
+   networks:
+     - app-network
+   profiles:
+     - prod
+
+ django-web-dev:
+   build:
+     context: .
+     target: development
+   container_name: ${CONTAINER_PREFIX}_django_web_dev
+   image: ${CONTAINER_PREFIX}_image_django_dev
+   ports:
+     - "${CONTAINER_DEV_PORT}:8000"
+   environment:
+     - SECRET_KEY=${DJANGO_SECRET_KEY}
+     - DEBUG=True
+     - DJANGO_LOGLEVEL=info
+     - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+     - DATABASE_ENGINE=postgresql_psycopg2
+     - DATABASE_NAME=dockerdjango
+     - DATABASE_USERNAME=dbuser
+     - DATABASE_PASSWORD=dbpassword
+     - DATABASE_HOST=db-dev
+     - DATABASE_PORT=5432
+     - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
+     - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
+     - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+   depends_on:
+     db-dev:
+       condition: service_healthy
+   networks:
+     - app-network
+   profiles:
+     - dev
+
+ django-web-prod:
+     build:
+       context: .
+       target: production
+     container_name: ${CONTAINER_PREFIX}_django_web_prod
+     image: ${CONTAINER_PREFIX}_image_django_prod
+     ports:
+       - "${CONTAINER_PROD_PORT}:8000"
+     environment:
+       - SECRET_KEY=${DJANGO_SECRET_KEY}
+       - DEBUG=False
+       - DJANGO_LOGLEVEL=info
+       - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+       - DATABASE_ENGINE=postgresql_psycopg2
+       - DATABASE_NAME=dockerdjango
+       - DATABASE_USERNAME=dbuser
+       - DATABASE_PASSWORD=dbpassword
+       - DATABASE_HOST=db-prod
+       - DATABASE_PORT=5432
+       - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
+       - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
+       - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+     depends_on:
+       db-prod:
+         condition: service_healthy
+     networks:
+       - app-network
+     profiles:
+       - prod
+
+ streamlit-app-dev:
+   build:
+     context: ./core #  Assuming Dockerfile.streamlit is in same directory
+     dockerfile: core/book/Dockerfile.streamlit
+     target: development
+   container_name: ${CONTAINER_PREFIX}_streamlit_dev
+   image: ${CONTAINER_PREFIX}_image_streamlit_dev
+   ports:
+       - "${CONTAINER_DEV_STREAMLIT_PORT:-8501}:8501"
+   depends_on:
+     - django-web-dev   # Or 'db' if Streamlit doesn't depend on Django
+   networks:
+     - app-network
+   profiles:
+     - dev
+
+ streamlit-app-prod:
+   build:
+     context: ./core #  Assuming Dockerfile.streamlit is in same directory
+     dockerfile: core/book/Dockerfile.streamlit
+     target: production
+   container_name: ${CONTAINER_PREFIX}_streamlit_prod
+   image: ${CONTAINER_PREFIX}_image_streamlit_prod
+   ports:
+     - "${CONTAINER_PROD_STREAMLIT_PORT:-8501}:8501"
+   depends_on:
+     - django-web-prod   # Or 'db' if Streamlit doesn't depend on Django
+   networks:
+     - app-network
+   profiles:
+     - prod
+
+ nginx-dev:
+   build: ./core/nginx  # Point to the directory containing the Nginx Dockerfile
+   container_name: ${CONTAINER_PREFIX}_nginx_dev
+   ports:
+     - "80:80"
+   depends_on:
+     - django-web-dev
+   volumes:
+     - static_volume:/var/www/static  # Corrected: Mount the static volume
+   networks:
+     - app-network
+   profiles:
+     - dev
+   restart: always
+
+ nginx-prod:
+     build: ./core/nginx  # Point to the directory containing the Nginx Dockerfile
+     container_name: ${CONTAINER_PREFIX}_nginx_prod
+     ports:
+       - "80:80"
+     depends_on:
+       - django-web-prod
+     volumes:
+       - static_volume:/var/www/static  # Corrected: Mount the static volume
+     networks:
+       - app-network
+     profiles:
+       - prod
+     restart: always
+
+networks:
+  app-network:
+    name: ${CONTAINER_PREFIX}_network
+    driver: bridge
+
+volumes:
+  postgres_data:
+  static_volume:

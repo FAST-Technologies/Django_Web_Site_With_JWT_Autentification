@@ -1,0 +1,146 @@
+{% load static %}
+{% load jsonify %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReLife - О нас</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/AboutUs.css' %}">
+</head>
+<body>
+    <div class="header">
+        <div class="user-info">
+            <button class="btn btn-primary" onclick="toggleAccount()" data-is-authenticated="{{ is_authenticated|yesno:'true,false' }}">
+                {% if profile_photo %}
+                    <img class="profile_icon" src="{{ profile_photo }}" style="display: block; width:28px; height:28px;" alt="Profile Information">
+                {% else %}
+                    <img class="profile_icon" src="{% static 'images/account_image.png' %}" style="display: block; width:28px; height:28px;" alt="Profile Information">
+                {% endif %}
+            </button>
+            <span class="user-text">Welcome to <span class="style_text"><span class="style_text2">ReLife</span>PMT</span>, {{ username }}</span>
+        </div>
+        <div class="logo">
+            <img src="{% static 'images/ReLife.png' %}" alt="ReLife Logo">
+        </div>
+        <div class="clock-container">
+            <div id="date-display"></div>
+            <div id="time-display"></div>
+            <div id="timer-display">00:00:00</div>
+        </div>
+        <div class="translate_img">
+            <button class="btn btn-primary" onclick="toggleTranslate()" data-lang="ru">
+                <img src="{% static 'images/translate.png' %}" alt="Translate">
+            </button>
+        </div>
+        <div>
+            <button class="btn btn-primary burger-menu" onclick="toggleSidebar()">☰</button>
+        </div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="authorization">
+            <button class="square_button" onclick="toggleSidebar()">
+                <img class="close-icon" src="{% static 'images/menu-toggle.png' %}" style="display: block; width:35px; height:35px;" alt="Close Button">
+            </button>
+            <div class="Autorization_class">
+                <button class="Account" onclick="toggleAccount()" data-is-authenticated="{{ is_authenticated|yesno:'true,false' }}">
+                    {% if profile_photo %}
+                        <img class="profile_icon" src="{{ profile_photo }}" style="display: block; width:28px; height:28px;" alt="Profile Information">
+                    {% else %}
+                        <img class="profile_icon" src="{% static 'images/account_image.png' %}" style="display: block; width:28px; height:28px;" alt="Profile Information">
+                    {% endif %}
+                </button>
+                <p>Welcome to <span class="style_text"><span class="style_text2">ReLife</span>PMT</span>, {{ username }} <span class="arrow-down">﹀</span></p>
+            </div>
+        </div>
+        <hr class="style_hr">
+        <div class="workspaces-section">
+            <h5>Активные рабочие пространства</h5>
+            <a href="#">🏠 Home developer page</a>
+            <a href="#">📋 Warehouse Tasks</a>
+            <a href="#" onclick="toggleWorkSpace()">➕ Добавить новое пространство</a>
+        </div>
+        <div class="projects-section">
+            <h5 class="mt-4">Текущие проекты</h5>
+            <a href="#" onclick="toggleAddProject()">➕ Добавить новый проект</a>
+        </div>
+        <div class="tasks-section">
+            <h5 class="mt-4">Задачи</h5>
+            <a href="{% url 'Tasks' %}">📋 Перейти к списку задач...</a>
+        </div>
+        <div class="settings-section">
+            <h5 class="mt-4">Настройки</h5>
+            <a href="{% url 'Settings' %}">⚙️ Настройки</a>
+            <a href="{% url 'Templates' %}">📝 Шаблоны</a>
+            <a href="{% url 'deleted' %}">🗑️ Удалённое</a>
+        </div>
+    </div>
+
+    <div class="content-wrapper" id="content-wrapper">
+        <div class="container-fluid">
+            <h3>О нас</h3>
+            <p>Мы - компания ReLife, родом из Академгородка города Новосибирска.</p>
+            <p>Ведём свою деятельность, начиная с 2017 года.</p>
+            <p>ReLife - это команда энтузиастов, которым не безразлична наша планета. Поэтому мы поддерживаем идею осознанного потребления и рассказываем о ней другим.</p>
+            <p>ReLife — это жизнь по принципу REduce, REpair, REuse, REcycle.</p>
+            <p>Есть ненужная электроника? Свяжитесь с нами! Мы принимаем электронику, которой вы не пользуетесь, даже если она в нерабочем состоянии.</p>
+            <p>Сданные вами электроприборы мы чиним, приводим в порядок и отправляем на продажу и благотворительность. А то, что сломано окончательно, мы разбираем и сдаём в переработку, чтобы минимизировать ущерб окружающей среде.</p>
+            <p>Все вырученные нами средства идут на дальнейшее развитие проекта.</p>
+            <p>Мы можем забрать ненужную вам электронику в Академгородке (Верхняя зона, микрорайон “Щ”, Шлюз). Для этого напишите (VK, Telegram, Instagram).</p>
+            <p>Вы также можете принести электронику на социальный склад “Есть дело” на ул. Балтийская, 35 в указанное время: ВТ, ЧТ и СБ. 14:00 - 17:00.</p>
+        </div>
+    </div>
+
+    <div class="footer" id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Разделы:</h5>
+                    <div class="footer-links">
+                        <a href="{% url 'Projects' %}" class="footer-link">Проекты</a>
+                        <a href="{% url 'Tasks' %}" class="footer-link">Задачи</a>
+                        <a href="{% url 'projectsSettings' %}" class="footer-link">Настройки проектов</a>
+                        <a href="{% url 'Workspaces' %}" class="footer-link">Рабочие пространства</a>
+                        <a href="{% url 'Teams' %}" class="footer-link">Наша команда</a>
+                        <a href="{% url 'AboutUs' %}" class="footer-link">О нас</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h5>Наши соцсети:</h5>
+                    <div class="socials-container">
+                        <a href="https://vk.com/relife_akadem" class="social-link" target="_blank">
+                            <img class="social-icon" src="{% static 'images/vk_logo.png' %}" alt="ВКонтакте">
+                            <span><u>VKontakte</u></span>
+                        </a>
+                        <a href="https://t.me/relife_eco" class="social-link" target="_blank">
+                            <img class="social-icon" src="{% static 'images/telegram_logo.png' %}" alt="Telegram">
+                            <span><u>Telegram</u></span>
+                        </a>
+                        <a href="https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Frelife_akadem%2F&is_from_rle" class="social-link" target="_blank">
+                            <img class="social-icon" src="{% static 'images/instagram_logo.png' %}" alt="Instagram">
+                            <span><u>Instagram</u></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="logo">
+                        <img src="{% static 'images/ReLife.png' %}" alt="ReLife Logo">
+                    </div>
+                    <div class="footer_text">
+                        <div class="footer-line">Наши <a href="{% url 'Conditions' %}" class="footer-policy-link"><u>условия пользования и политика конфиденциальности</u></a></div>
+                        <div class="footer-line">© Все права защищены</div>
+                        <div class="footer-line">2025. Made By FAST_DEVELOP</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="static-url" style="display: none;" data-static-url="{% static '' %}"></div>
+    <div id="conditions-url" style="display: none;" data-url="{% url 'Conditions' %}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script id="token-data" type="application/json" data-token="{{ token_data|jsonify_inline|default:'{}' }}"></script>
+    <script src="{% static 'js/relife_dashboard.js' %}"></script>
+</body>
+</html>

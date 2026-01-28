@@ -1,0 +1,154 @@
+body {
+    background: url("../images/register_image.png") no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.register-container {
+    background-color: #868686;
+    padding: 20px;
+    border-radius: 10px;
+    width: 576px;
+    text-align: center;
+    box-sizing: border-box;
+}
+.register-container h2 {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 45px;
+}
+.social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin: 0 auto;
+    width: 90%;
+}
+.social-buttons a {
+    padding: 10px;
+    font-size: 1.25rem;
+    border-radius: 20px;
+    background-color: #D9D9D9;
+    color: black;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 82px;
+    gap: 10px;
+    font-weight: bolder;
+    text-decoration: none;
+    border: 2px solid #000;
+    text-align: center;
+}
+.divider {
+    font-size: 1rem;
+    font-weight: normal;
+    margin: 30px 0;
+    color: white;
+    position: relative;
+    text-align: center;
+}
+.divider::before, .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 20%;
+    height: 1px;
+    background: white;
+}
+.divider::before {
+    left: 0;
+}
+.divider::after {
+    right: 0;
+}
+.register-form input {
+    width: 90%;
+    height: 82px;
+    margin: 20px auto;
+    border: 4px solid #FFFFFF;
+    border-radius: 20px;
+    background-color: #1F1F1F;
+    color: #878787;
+    font-size: 1.25rem;
+    padding: 0 15px;
+    box-sizing: border-box;
+    display: block;
+}
+.register-form input::placeholder {
+    color: #878787;
+}
+.register-form .reg_text {
+    font-size: 0.9rem;
+    font-weight: lighter;
+    color: white;
+    margin: 20px 0;
+    line-height: 1.4;
+}
+.register-form .reg_text a {
+    text-decoration: underline;
+    color: #004DCD;
+}
+.register-btn {
+    background-color: #007bff;
+    border: 2px solid darkblue;
+    color: white;
+    padding: 10px;
+    border-radius: 20px;
+    width: 90%;
+    cursor: pointer;
+    font-size: 2rem;
+    font-weight: bold;
+    height: 82px;
+    margin: 20px auto;
+    display: block;
+}
+.forgotten_text {
+    font-size: 1rem;
+    font-weight: bolder;
+    right: 10px;
+    text-decoration: underline;
+    color: #004DCD;
+    display: block;
+    text-align: right;
+    margin-right: 5px;
+    margin-bottom: 10px;
+}
+.links {
+    margin: 10px 0;
+    color: white;
+    font-weight: bolder;
+    font-size: 1.25rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 25px;
+}
+.links a {
+    color: #004DCD;
+    text-decoration: underline;
+}
+.messages {
+    margin-bottom: 20px;
+}
+.messages p {
+    color: #f44336;
+    font-size: 1rem;
+    margin: 0;
+}
+.errorlist {
+    color: #f44336;
+    font-size: 0.9rem;
+    text-align: left;
+    margin: 5px 0 10px 5%;
+    list-style: none;
+    padding: 0;
+}

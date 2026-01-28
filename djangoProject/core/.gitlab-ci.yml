@@ -1,0 +1,46 @@
+stages:
+  - build
+
+variables:
+  CONTAINER_PREFIX: "pmt-${CI_COMMIT_REF_SLUG}"
+  DJANGO_APP_PORT: "8080"
+  CONTAINER_DEV_PORT: "1319"
+  CONTAINER_PROD_PORT: "1318"
+  CONTAINER_DEV_STREAMLIT_PORT: "8501"
+  CONTAINER_PROD_STREAMLIT_PORT: "8501"
+  DJANGO_SECRET_KEY: "nt#_hd%*q2!=@c_i%0p6do01l#p8^x3iz5&js*%nm@q!6cyu5="
+  DJANGO_SUPERUSER_USERNAME: "admin"
+  DJANGO_SUPERUSER_EMAIL: "example@email.com"
+  DJANGO_SUPERUSER_PASSWORD: "admin"
+
+.build_template:
+  stage: build
+  services:
+    - docker:dind
+  before_script:
+    - apk add --no-cache docker-compose
+  script:
+    - cat Dockerfile
+    - cat book/Dockerfile.streamlit
+    - docker-compose -profile $PROFILE config
+    - docker-compose down --remove-orphans
+    - docker-compose -profile $PROFILE up -d --build
+    - sleep 10  # Дать время контейнерам подняться
+    - docker-compose -profile $PROFILE ps  # Проверить статус
+    - docker-compose -profile $PROFILE logs  # Вывести логи для диагностики
+# Сборка для dev
+build_dev:
+  extends: .build_template
+  variables:
+    PROFILE: "dev"
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "dev"'
+# Сборка для prod
+build_prod:
+  extends: .build_template
+  variables:
+    PROFILE: "prod"
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+
+

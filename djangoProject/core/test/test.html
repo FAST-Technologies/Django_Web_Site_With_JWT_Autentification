@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReLife</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/test.css">
+</head>
+<body>
+
+<div class="sidebar" id="sidebar">
+    <h5>Активные рабочие пространства</h5>
+    <a href="#">🏠 Home developer page</a>
+    <a href="#">📋 Warehouse Tasks</a>
+    <a href="#">➕ Добавить новое пространство</a>
+    <h5 class="mt-4">Текущие проекты</h5>
+    <a href="#">👑 Проект 1</a>
+    <a href="#">🎉 Проект 2</a>
+    <a href="#">🚀 Проект 3</a>
+    <a href="#">➕ Добавить новый проект</a>
+    <h5 class="mt-4">Задачи</h5>
+    <a href="#">📋 Перейти к списку задач...</a>
+    <h5 class="mt-4">Настройки</h5>
+    <h5 href="#">⚙️ Настройки</h5>
+    <h5 href="#">📝 Шаблоны</h5>
+    <h5 href="#">🗑️ Удаленное</h5>
+</div>
+
+<div class="header">
+    <div>
+        <img src="https://via.placeholder.com/30" alt="User Avatar" class="rounded-circle me-2">
+        Welcome to ReLifePMT, UserName
+    </div>
+    <div class="logo">
+        <img src="static/images/ReLife.png" alt="ReLife Logo">
+    </div>
+    <div class="translate_img">
+        <button class="btn btn-primary">
+            <img src="static/images/translate.png" alt="Translate">
+        </button>
+    </div>
+    <div>
+        <button class="btn btn-primary burger-menu" onclick="toggleSidebar()">☰</button>
+    </div>
+</div>
+
+<div class="content-wrapper" id="content-wrapper">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-md-6 main-content">
+                <h3>ТВОИ ПРОЕКТЫ</h3>
+                <div class="d-flex justify-content-between mb-3">
+                    <button class="btn btn-warning">Начать сейчас</button>
+                    <div class="input-group" style="width: 200px;">
+                        <input type="text" class="form-control" placeholder="Поиск">
+                        <button class="btn btn-outline-secondary">🔍</button>
+                    </div>
+                </div>
+
+                <div id="projects-container"></div>
+            </div>
+
+            <!-- Task List -->
+            <div class="col-md-3 task-list">
+                <h3 class="task-menu-text">МОИ ТЕКУЩИЕ ЗАДАЧИ</h3>
+                <div id="tasks-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Разделы:</h5>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Проекты</a>
+                    <a href="#" class="footer-link">Задачи</a>
+                    <a href="#" class="footer-link">Настройки проектов</a>
+                    <a href="#" class="footer-link">Рабочие пространства</a>
+                    <a href="#" class="footer-link">Участники проектов</a>
+                    <a href="#" class="footer-link">О нас</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h5>Наши соц.сети:</h5>
+                <div class="socials-container">
+                    <a href="https://vk.com/relife_akadem" class="social-link" target="_blank">
+                        <img class="social-icon" src="static/images/vk_logo.png" alt="ВКонтакте">
+                        <span><u>VKontakte</u></span>
+                    </a>
+                    <a href="https://t.me/relife_eco" class="social-link" target="_blank">
+                        <img class="social-icon" src="static/images/telegram_logo.png" alt="Telegram">
+                        <span><u>Telegram</u></span>
+                    </a>
+                    <a href="https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Frelife_akadem%2F&is_from_rle" class="social-link" target="_blank">
+                        <img class="social-icon" src="static/images/instagram_logo.png" alt="Instagram">
+                        <span><u>Instagram</u></span>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="logo">
+                    <img src="static/images/ReLife.png" alt="ReLife Logo">
+                </div>
+                <p class="footer_text">
+                <div class="footer-line">Наши <u>условия пользования и политика конфиденциальности</u></div>
+                <div class="footer-line">© Все права защищены</div>
+                <div class="footer-line">2025. Made By FAST_DEVELOP</div>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Данные проектов
+    const projectsData = [
+        {
+            name: "ПРОЕКТ 1",
+            description: "Здесь будет некоторое описание проекта, для понимания, как он будет использоваться"
+        },
+        {
+            name: "ПРОЕКТ 2",
+            description: "Здесь будет некоторое описание проекта, для понимания, как он будет использоваться"
+        },
+        {
+            name: "ПРОЕКТ 3",
+            description: "Здесь будет некоторое описание проекта, для понимания, как он будет использоваться"
+        }
+    ];
+
+    // Данные задач
+    const tasksData = [
+        {
+            projectName: "ПРОЕКТ 1",
+            name: "Перечень данных сайта для вывода заказов",
+            description: "Перечень данных сайта для вывода заказов"
+        },
+        {
+            projectName: "ПРОЕКТ 2",
+            name: "Донести бота в Telegram для упрощения взаимодействия",
+            description: "Донести бота в Telegram для упрощения взаимодействия"
+        },
+        {
+            projectName: "ПРОЕКТ 3",
+            name: "Отстроить микросервис на складе",
+            description: "Отстроить микросервис на складе"
+        },
+        {
+            projectName: "ПРОЕКТ 3",
+            name: "Придумать способ передачи JWT-токенов на сервер",
+            description: "Придумать способ передачи JWT-токенов на сервер"
+        },
+        {
+            projectName: "ПРОЕКТ 3",
+            name: "Придумать ещё проект",
+            description: "Придумать ещё проект"
+        }
+    ];
+
+    // Функция для отображения проектов
+    function renderProjects() {
+        const container = document.getElementById('projects-container');
+        if (projectsData.length === 0) {
+            container.innerHTML = '<p>No projects found.</p>';
+            return;
+        }
+
+        container.innerHTML = projectsData.map(project => `
+                <div class="project-card">
+                    <img src="https://via.placeholder.com/100x60" alt="Нет изображения">
+                    <div class="project-details">
+                        <h4>${project.name}</h4>
+                        <p>${project.description}</p>
+                    </div>
+                    <button class="btn btn-primary">Перейти к проекту...</button>
+                </div>
+            `).join('');
+    }
+
+    // Функция для отображения задач
+    function renderTasks() {
+        const container = document.getElementById('tasks-container');
+        if (tasksData.length === 0) {
+            container.innerHTML = '<p>No tasks found.</p>';
+            return;
+        }
+
+        container.innerHTML = tasksData.map(task => `
+                <div class="task-item">
+                    <p><strong>Project: ${task.projectName}</strong></p>
+                    <p>Task: ${task.name}</p>
+                    <p>${task.description}</p>
+                    <button class="btn btn-success">Перейти к выполнению...</button>
+                </div>
+            `).join('');
+    }
+
+    // Инициализация
+    renderProjects();
+    renderTasks();
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const contentWrapper = document.getElementById('content-wrapper');
+        const header = document.querySelector('.header');
+        sidebar.classList.toggle('active');
+        contentWrapper.classList.toggle('active');
+        header.classList.toggle('active');
+    }
+</script>
+</body>
+</html>

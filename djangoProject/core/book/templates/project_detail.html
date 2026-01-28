@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReLife - Project Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/RelifeDashboard.css' %}">
+    <script src="{% static 'js/relife_dashboard.js' %}" defer></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Проект: {{ project.name }}</h1>
+
+        <!-- Форма для редактирования проекта -->
+        <div class="mt-4">
+            <h2>Редактировать проект</h2>
+            <form id="edit-project-form" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="project-name" class="form-label">Название проекта</label>
+                    <input type="text" class="form-control" id="project-name" name="name" value="{{ project.name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="project-description" class="form-label">Описание проекта</label>
+                    <textarea class="form-control" id="project-description" name="description" rows="3" required>{{ project.description }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="project-image" class="form-label">Изображение проекта</label>
+                    <input type="file" class="form-control" id="project-image" name="image" accept="image/*">
+                    <img id="current-image" src="{% if project.image %}{{ project.image.url }}{% else %}{% static 'images/no_img.png' %}{% endif %}" alt="Изображение проекта" style="max-width: 150px; height: auto; margin-top: 10px;">
+                </div>
+                <button type="submit" class="btn btn-success">Сохранить изменения</button>
+            </form>
+        </div>
+
+        <h2 class="mt-4">Задачи проекта</h2>
+        {% if project.tasks.all %}
+            <table class="table table-bordered mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Название задачи</th>
+                        <th>Описание</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in project.tasks.all %}
+                        <tr>
+                            <td>{{ task.name }}</td>
+                            <td>{{ task.description }}</td>
+                            <td>
+                                <a href="{% url 'task_detail' task.id %}" class="btn btn-sm btn-info">Просмотреть</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>У этого проекта пока нет задач.</p>
+        {% endif %}
+
+        <div class="mt-4">
+            <a href="{% url 'Projects' %}" class="btn btn-primary">Вернуться к проектам</a>
+            <form method="POST" action="{% url 'project_detail' project.id %}" onsubmit="return confirm('Вы уверены, что хотите удалить этот проект?');" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <button type="submit" class="btn btn-danger">Удалить проект</button>
+            </form>
+        </div>
+    </div>
+    <input type="hidden" id="csrf-token" value="{{ csrf_token }}">
+    <script>
+        if (!document.cookie.includes('csrftoken')) {
+            document.cookie = `csrftoken=${document.getElementById('csrf-token').value}; path=/`;
+        }
+
+        // Обработчик отправки формы для редактирования проекта
+        document.getElementById('edit-project-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const projectId = {{ project.id }};
+
+            try {
+                const response = await fetchWithCsrf(`/api/projects/${projectId}/update/`, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert('Проект успешно обновлён!');
+                    // Обновляем данные на странице
+                    document.querySelector('h1').textContent = `Проект: ${formData.get('name')}`;
+                    if (formData.get('image')) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            document.getElementById('current-image').src = e.target.result;
+                        };
+                        reader.readAsDataURL(formData.get('image'));
+                    }
+                    // Обновляем projectsData
+                    const projectIndex = projectsData.findIndex(p => p.id === projectId);
+                    if (projectIndex !== -1) {
+                        projectsData[projectIndex].name = { [currentLang]: formData.get('name') };
+                        projectsData[projectIndex].description = { [currentLang]: formData.get('description') };
+                        if (data.image_url) {
+                            projectsData[projectIndex].image = data.image_url;
+                        }
+                        renderSidebarProjects();
+                    }
+                } else {
+                    alert(`Ошибка при обновлении проекта: ${data.error}`);
+                }
+            } catch (error) {
+                console.error('Error updating project:', error);
+                alert('Произошла ошибка при обновлении проекта: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

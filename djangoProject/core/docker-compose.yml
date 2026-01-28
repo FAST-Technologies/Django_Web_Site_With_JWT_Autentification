@@ -1,0 +1,323 @@
+services:
+  db-dev:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: "${DB_NAME_PMT}"
+      POSTGRES_USER: "${DB_USER_PMT}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD_PMT}"
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_data_pmt:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER_PMT} -d ${DB_NAME_PMT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+    profiles:
+      - dev
+
+  db-prod:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: "${DB_NAME_PMT}"
+      POSTGRES_USER: "${DB_USER_PMT}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD_PMT}"
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres_data_pmt:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER_PMT} -d ${DB_NAME_PMT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+    profiles:
+      - prod
+
+  django-web-dev:
+    build:
+      context: .
+      target: development
+    container_name: ${CONTAINER_PREFIX}_django_web_dev
+    image: ${CONTAINER_PREFIX}_image_django_dev
+    ports:
+      - "1319:1319"  # HTTPS порт
+    environment:
+      - SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DEBUG=True
+      - DJANGO_LOGLEVEL=info
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+      - DATABASE_ENGINE=${DB_ENGINE_PMT}
+      - DATABASE_NAME=${DB_NAME_PMT}
+      - DATABASE_USERNAME=${DB_USER_PMT}
+      - DATABASE_PASSWORD=${DB_PASSWORD_PMT}
+      - DATABASE_HOST=${DB_HOST_DEV}
+      - DATABASE_PORT=${DB_PORT}
+      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
+      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
+      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+      - REDIS_ADDR=${REDIS_ADDR}
+      - JWT_SECRET=${JWT_SECRET}
+      - KEYCLOAK_URL=https://keycloak:${KEYCLOAK_PORT}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+    depends_on:
+      db-dev:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - ./certs:/app/certs
+    networks:
+      - app-network
+    profiles:
+      - dev
+    restart: always
+    command: ["gunicorn", "--bind", "0.0.0.0:1319", "--certfile=/app/certs/cert.pem", "--keyfile=/app/certs/key.pem", "core.wsgi:application"]
+
+  django-web-prod:
+    build:
+      context: .
+      target: production
+    container_name: ${CONTAINER_PREFIX}_django_web_prod
+    image: ${CONTAINER_PREFIX}_image_django_prod
+    ports:
+      - "1318:8000"  # HTTPS порт (обновим на 443 в продакшене позже)
+    environment:
+      - SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DEBUG=False
+      - DJANGO_LOGLEVEL=info
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+      - DATABASE_ENGINE=${DB_ENGINE_PMT}
+      - DATABASE_NAME=${DB_NAME_PMT}
+      - DATABASE_USERNAME=${DB_USER_PMT}
+      - DATABASE_PASSWORD=${DB_PASSWORD_PMT}
+      - DATABASE_HOST=${DB_HOST_PROD}
+      - DATABASE_PORT=${DB_PORT}
+      - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
+      - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
+      - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+      - REDIS_ADDR=${REDIS_ADDR}
+      - JWT_SECRET=${JWT_SECRET}
+      - KEYCLOAK_URL=https://keycloak:${KEYCLOAK_PORT}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+    depends_on:
+      db-prod:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+      - ./certs:/app/certs
+    networks:
+      - app-network
+    profiles:
+      - prod
+    restart: always
+    command: ["gunicorn", "--bind", "0.0.0.0:8000", "--certfile=/app/certs/cert.pem", "--keyfile=/app/certs/key.pem", "core.wsgi:application"]
+
+  nginx-dev:
+    build: ./nginx
+    container_name: ${CONTAINER_PREFIX}_nginx_dev
+    ports:
+      - "80:80"  # Оставляем для редиректа
+      - "443:443"  # HTTPS
+    depends_on:
+      - django-web-dev
+    volumes:
+      - static_volume:/var/www/static
+      - media_volume:/var/www/media
+      - ./certs:/etc/nginx/certs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Убедитесь, что конфигурация обновлена
+    networks:
+      - app-network
+    profiles:
+      - dev
+    restart: always
+
+  nginx-prod:
+    build: ./nginx
+    container_name: ${CONTAINER_PREFIX}_nginx_prod
+    ports:
+      - "80:80"  # Оставляем для редиректа
+      - "443:443"  # HTTPS
+    depends_on:
+      - django-web-prod
+    volumes:
+      - static_volume:/var/www/static
+      - media_volume:/var/www/media
+      - ./certs:/etc/nginx/certs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Убедитесь, что конфигурация обновлена
+    networks:
+      - app-network
+    profiles:
+      - prod
+    restart: always
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - app-network
+    restart: always
+
+  postgres-auth:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: "${DB_USER_AUTH}"
+      POSTGRES_PASSWORD: "${DB_PASSWORD_AUTH}"
+      POSTGRES_DB: "${DB_NAME_AUTH}"
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - pgdata_auth:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER_AUTH} -d ${DB_NAME_AUTH}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+    restart: always
+
+  keycloak:
+    build:
+      context: .
+      dockerfile: Dockerfile.keycloak
+    environment:
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_PASSWORD}
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres-auth:5432/${DB_NAME_AUTH}
+      - KC_DB_USERNAME=${DB_USER_AUTH}
+      - KC_DB_PASSWORD=${DB_PASSWORD_AUTH}
+      - KC_HOSTNAME_STRICT=false
+      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/cert.pem
+      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/key.pem
+      - KC_HTTPS_PORT=8443
+    ports:
+      - "${KEYCLOAK_PORT}:8443"
+    depends_on:
+      - postgres-auth
+    volumes:
+      - ./certs:/opt/keycloak/certs
+    networks:
+      - app-network
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-k", "-f", "https://localhost:8443/realms/auth-service/.well-known/openid-configuration" ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "1321:1321"  # HTTPS порт
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=${DB_HOST_AUTH}
+      - DB_PORT=5432
+      - DB_USER=${DB_USER_AUTH}
+      - DB_PASSWORD=${DB_PASSWORD_AUTH}
+      - DB_NAME=${DB_NAME_AUTH}
+      - KEYCLOAK_URL=https://keycloak:8443
+    depends_on:
+      redis:
+        condition: service_started
+      postgres-auth:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    volumes:
+      - ./certs:/app/certs
+    networks:
+      - app-network
+    restart: always
+    command: ["./auth-service", "--certfile=/app/certs/cert.pem", "--keyfile=/app/certs/key.pem"]
+
+  migrate:
+    image: migrate/migrate
+    depends_on:
+      - postgres-auth
+    volumes:
+      - ./auth-service/migrations:/migrations
+    networks:
+      - app-network
+    entrypoint:
+      [
+        "migrate",
+        "-path",
+        "/migrations",
+        "-database",
+        "postgres://${DB_USER_AUTH}:${DB_PASSWORD_AUTH}@postgres-auth:5432/${DB_NAME_AUTH}?sslmode=disable",
+        "up",
+      ]
+    restart: "no"
+
+  token-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${CONTAINER_PREFIX}_token_service
+    image: ${CONTAINER_PREFIX}_image_token_service
+    ports:
+      - "8002:8002"  # HTTPS порт
+    environment:
+      - DB_HOST=${DB_HOST_AUTH}
+      - DB_NAME=${DB_NAME_AUTH}
+      - DB_USER=${DB_USER_AUTH}
+      - DB_PASSWORD=${DB_PASSWORD_AUTH}
+      - DB_PORT=${DATABASE_PORT}
+      - TOKEN_URL=https://auth-service:1321/get-tokens
+      - PASSWORD=1234
+      - REDIS_ADDR=${REDIS_ALIAS}
+      - REDIS_PORT=${REDIS_PORT}
+      - REDIS_DB=${REDIS_DB}
+      - KEYCLOAK_URL=https://keycloak:8443
+    depends_on:
+      postgres-auth:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      auth-service:
+        condition: service_started
+      keycloak:
+        condition: service_started
+    volumes:
+      - ./token_validation.py:/app/token_validation.py
+      - ./certs:/app/certs
+    networks:
+      - app-network
+    profiles:
+      - dev
+    restart: always
+    command: ["python", "/app/token_validation.py"]
+
+networks:
+  app-network:
+    name: ${CONTAINER_PREFIX}_network
+    driver: bridge
+
+volumes:
+  postgres_data_pmt:
+  postgres_data_auth:
+  static_volume:
+  media_volume:
+  pgdata_auth:

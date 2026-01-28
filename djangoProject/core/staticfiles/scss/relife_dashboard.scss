@@ -1,0 +1,1077 @@
+// Переменные для цветов и других констант
+$primary-bg: #EFB861;
+$header-bg: #016B9F;
+$sidebar-bg: #C9C9C9;
+$main-content-bg: #F1F0F0;
+$task-list-bg: #D9D9D9;
+$project-card-bg: #D9D9D9;
+$project-details-bg: #797878;
+$token-info-bg: #D9D9D9;
+$text-white: #fff;
+$text-primary: #000;
+$accent-color: #18A39C;
+$button-bg: #0011A6;
+$button-success-bg: #28a745;
+$button-success-hover: red;
+$link-color: #3FD411;
+$link-hover: #f00;
+$scrollbar-track: #fff;
+$scrollbar-thumb: #1a1a1a;
+$scrollbar-thumb-hover: #333333;
+
+// Основные стили
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: Inter, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: $primary-bg;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: $scrollbar-thumb $scrollbar-track;
+  -ms-overflow-style: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px; // Убрано !important
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $scrollbar-track;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $scrollbar-thumb;
+    border-radius: 10px;
+
+    &:hover {
+      background: $scrollbar-thumb-hover;
+    }
+  }
+}
+
+.header {
+  background-color: $header-bg;
+  color: $text-white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  height: 60px;
+  transition: transform 0.3s ease;
+
+  &.active {
+    transform: translateX(300px);
+    width: calc(100% - 300px);
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    flex-shrink: 1;
+
+    img {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    .user-text {
+      font-size: 16px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 300px;
+    }
+
+    .style_text {
+      color: $text-white;
+      font-weight: bold;
+    }
+
+    .style_text2 {
+      color: $accent-color;
+    }
+
+    button {
+      background-color: #0F0D36;
+    }
+  }
+
+  .logo {
+    font-size: 24px;
+    font-weight: bold;
+    flex-shrink: 0;
+
+    img {
+      height: 40px;
+    }
+  }
+
+  .translate_img {
+    padding-right: 15px;
+    flex-shrink: 0;
+
+    button {
+      background: none;
+      border: none;
+
+      img {
+        width: 24px;
+      }
+    }
+  }
+
+  .burger-menu {
+    background: none;
+    border: none;
+    color: $text-white;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+}
+
+.clock-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0 20px;
+  color: $text-white;
+  font-size: 1rem;
+  flex-shrink: 0;
+  gap: 10px;
+
+  #date-display, #time-display, #timer-display {
+    margin: 0;
+    font-weight: bold;
+    white-space: nowrap;
+  }
+}
+
+.task-menu-text {
+  font-size: 40px;
+  line-height: normal;
+  font-weight: bolder;
+}
+
+.content-wrapper {
+  flex: 1;
+  display: flex;
+  margin-top: 60px;
+  transition: transform 0.3s ease;
+  z-index: 998;
+
+  &.active {
+    transform: translateX(300px);
+    width: calc(100% - 300px);
+  }
+
+  .project-add {
+    font-weight: bold;
+    font-size: 20px;
+  }
+}
+
+.sidebar {
+  background-color: $sidebar-bg;
+  padding: 20px;
+  width: 300px;
+  position: fixed;
+  top: 60px;
+  bottom: 70px;
+  left: -300px;
+  transition: left 0.3s ease;
+  z-index: 999;
+  border: 2px solid $text-primary;
+  overflow-y: auto;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: $text-primary $scrollbar-track;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: none;
+    border-radius: 10px;
+
+    &:hover {
+      background: $scrollbar-thumb-hover;
+    }
+  }
+
+  &.active {
+    left: 0;
+  }
+
+  a {
+    display: block;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+    text-decoration: none;
+
+    &:hover {
+      color: #007bff;
+    }
+  }
+
+  h5 {
+    display: block;
+    font-style: normal;
+    font-size: 16px;
+    font-weight: bold;
+    color: $text-primary;
+
+    &:hover {
+      color: #2f2b2b;
+    }
+  }
+
+  .authorization {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 3px;
+    background-color: $sidebar-bg;
+
+    .square_button {
+      width: 35px;
+      height: 35px;
+      position: absolute;
+      top: -13px;
+      right: -13px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 0;
+
+      .close-icon {
+        width: 24px;
+        height: 24px;
+        display: block;
+      }
+    }
+
+    .Autorization_class {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .Account {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #f7c948;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .profile_icon {
+          width: 28px;
+          height: 28px;
+          display: block;
+          border-radius: 50%;
+        }
+      }
+
+      p {
+        margin: 0;
+        font-size: 16px;
+        color: #333;
+
+        .style_text {
+          color: $text-primary;
+          font-weight: bold;
+        }
+
+        .style_text2 {
+          color: $accent-color;
+        }
+
+        .arrow-down {
+          color: #333;
+        }
+      }
+    }
+  }
+}
+
+.style_hr {
+  background-color: $text-primary;
+  height: 1px;
+}
+
+.main-content {
+  padding: 20px;
+  background-color: $main-content-bg;
+  color: $text-primary;
+  height: calc(100vh - 60px - 270px + 200px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: $scrollbar-thumb $scrollbar-track;
+  flex: 1;
+  max-width: 1130px;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $scrollbar-track;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $scrollbar-track; // Исправлено с #fff на $scrollbar-track
+    border-radius: 10px;
+
+    &:hover {
+      background: $scrollbar-thumb-hover;
+    }
+  }
+
+  h3 {
+    font-size: 40px;
+    font-weight: normal;
+    text-align: center;
+  }
+
+  .d-flex.justify-content-between.mb-3.test1 {
+    width: 100%;
+    max-width: 968px;
+    gap: 20px;
+  }
+
+  .project-add {
+    display: flex;
+    flex-direction: row;
+    height: 52px;
+    margin: 27px 20px;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 968px;
+    padding: 0 20px;
+
+    p {
+      font-size: 20px;
+      text-align: center;
+      margin: auto 0;
+    }
+
+    .square_button {
+      height: 52px;
+      width: 52px;
+      background-color: #D9D9D9;
+      right: 0;
+      font-size: 32px;
+    }
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: row;
+    width: 740px;
+    height: 48px;
+    border: 1px solid gray;
+    border-radius: 20px;
+    overflow: hidden;
+
+    input {
+      flex-grow: 1;
+      border: none;
+      border-radius: 20px 0 0 20px;
+      outline: none;
+      padding: 0 10px;
+      height: 100%;
+    }
+
+    button {
+      border: none;
+      border-radius: 0 20px 20px 0;
+      background-color: #e9ecef;
+      padding: 0 15px;
+      height: 100%;
+    }
+  }
+
+  .find-now-btn {
+    border-radius: 20px;
+    border: 1px solid $text-primary;
+    height: 48px;
+    padding: 0 20px;
+  }
+}
+
+.project-card {
+  background-color: $project-card-bg;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  border-radius: 5px;
+  border: 1px solid $text-primary;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 968px;
+  width: 100%;
+  box-sizing: border-box;
+
+  img {
+    width: 100%;
+    max-width: 358px;
+    height: auto;
+    aspect-ratio: 358/192;
+    margin-right: 1rem;
+    background-color: #d3d3d3;
+    display: block;
+    color: #888;
+    font-size: 12px;
+    border-radius: 5px;
+    border: 1px solid $text-primary;
+    object-fit: cover;
+  }
+
+  .project-details {
+    flex-grow: 1;
+    border: 1px solid $text-primary;
+    border-radius: 20px;
+    background-color: $project-details-bg;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 0.5rem;
+    max-width: 516px;
+    box-sizing: border-box;
+
+    h4 {
+      margin: 0;
+      color: $text-white;
+      font-weight: bold;
+      font-size: 2.5rem;
+      text-align: center;
+      word-wrap: break-word;
+    }
+
+    p {
+      margin: 0.3rem 0 0;
+      color: $text-white;
+      font-size: 1rem;
+      font-weight: bolder;
+      text-align: center;
+      word-wrap: break-word;
+    }
+
+    .btn {
+      align-self: flex-end;
+      margin: 0.625rem 0.625rem 0.3px 0;
+      background-color: $button-bg;
+      color: $text-white;
+      border-radius: 20px;
+      border: 1px solid $text-primary;
+      max-height: 40px;
+      padding: 0.5rem 1rem;
+    }
+  }
+}
+
+.task-list {
+  background-color: $task-list-bg;
+  padding: 20px;
+  height: calc(100vh - 60px - 270px + 200px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: auto;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: $scrollbar-thumb $scrollbar-track;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $scrollbar-track;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $scrollbar-track; // Исправлено с #fff на $scrollbar-track
+    border-radius: 10px;
+
+    &:hover {
+      background: $scrollbar-thumb-hover;
+    }
+  }
+
+  .d-flex.justify-content-between.mb-3.test2 {
+    width: 100%;
+    max-width: 425px;
+    gap: 10px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    max-width: 425px;
+    height: 48px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    overflow: hidden;
+
+    input {
+      flex-grow: 1;
+      border: none;
+      border-radius: 5px 0 0 5px;
+      outline: none;
+      padding: 0 10px;
+      height: 100%;
+    }
+
+    button {
+      border: none;
+      border-radius: 0 5px 5px 0;
+      background-color: #e9ecef;
+      padding: 0 15px;
+      height: 100%;
+    }
+  }
+
+  .find-now-btn1 {
+    border-radius: 5px;
+    border: 1px solid $text-primary;
+    height: 48px;
+    padding: 0 40px;
+  }
+
+  .task-add {
+    display: flex;
+    flex-direction: row;
+    height: 52px;
+    margin: 27px 20px;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 470px;
+    padding: 0 20px;
+
+    p {
+      font-size: 20px;
+      font-weight: bolder;
+      text-align: center;
+      margin: auto 0;
+    }
+
+    .square_button {
+      height: 52px;
+      width: 52px;
+      background-color: #D9D9D9;
+      right: 0;
+      font-size: 32px;
+    }
+  }
+
+  h3 {
+    font-size: 40px;
+    font-weight: normal;
+    text-align: center;
+  }
+
+  .task-item {
+    background-color: #e9ecef;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 20px;
+    border: 1px solid $text-primary;
+
+    p {
+      margin: 5px 0;
+
+      span {
+        font-family: Jokerman, sans-serif;
+      }
+    }
+
+    .btn-success {
+      background-color: $button-success-bg;
+      border: 1px solid grey;
+      width: 100%;
+      border-radius: 20px;
+
+      &:hover {
+        background-color: $button-success-hover;
+        transition-delay: 0.5s;
+        transition-duration: 0.5s;
+      }
+    }
+  }
+}
+
+.footer {
+  background-color: $header-bg;
+  padding: 20px 0;
+  width: 100%;
+  position: relative;
+  z-index: 1000;
+
+  h5 {
+    color: $text-white;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    a {
+      font-weight: bold;
+    }
+  }
+
+  .footer-link {
+    color: $link-color;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $link-hover;
+    }
+  }
+
+  .socials-container {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+
+    a {
+      font-weight: bolder;
+    }
+
+    span:hover {
+      color: #21c62e;
+    }
+  }
+
+  .logo {
+    margin-bottom: 15px;
+
+    img {
+      height: 50px;
+    }
+  }
+
+  .col-md-4 {
+    .footer_text {
+      color: $text-primary; // Убрано !important
+      line-height: 1.5;
+      font-size: 14px;
+
+      .footer-line {
+        margin: 17px 0;
+        color: $text-primary;
+
+        .footer-policy-link {
+          color: $link-color;
+          text-decoration: none;
+          transition: color 0.3s ease;
+
+          &:hover {
+            color: $link-hover;
+            transition: all 0.8s ease;
+          }
+
+          u {
+            font-style: italic;
+          }
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: $text-white;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1) translateX(5px);
+    }
+  }
+
+  .social-icon {
+    height: 24px;
+    width: 24px;
+    object-fit: contain;
+  }
+
+  .relife-logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #00f;
+  }
+
+  p {
+    margin: 5px 0;
+    font-size: 14px;
+  }
+}
+
+.token-info {
+  background-color: $token-info-bg;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid $text-primary;
+  margin: 20px 0;
+  width: 100%;
+  max-width: 968px;
+  box-sizing: border-box;
+
+  h3 {
+    font-size: 24px;
+    font-weight: bold;
+    color: $text-primary;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 16px;
+    color: #333;
+    margin: 5px 0;
+    word-wrap: break-word;
+
+    strong {
+      color: $text-primary;
+      font-weight: bold;
+    }
+  }
+}
+
+// Медиа-запросы
+@media (max-width: 992px) {
+  .sidebar {
+    width: 250px;
+    left: -250px;
+  }
+
+  .header {
+    &.active {
+      transform: translateX(250px);
+      width: calc(100% - 250px);
+    }
+
+    .logo {
+      font-size: 20px;
+    }
+
+    .user-text {
+      max-width: 200px;
+    }
+  }
+
+  .content-wrapper {
+    &.active {
+      transform: translateX(250px);
+      width: calc(100% - 250px);
+    }
+  }
+
+  .task-list {
+    width: 250px;
+    height: calc(100vh - 60px - 270px);
+  }
+
+  .main-content {
+    height: calc(100vh - 60px - 270px);
+  }
+
+  .task-menu-text {
+    font-size: 32px;
+  }
+
+  .project-card {
+    max-width: 100%;
+    padding: 0.8rem;
+
+    img {
+      max-width: 300px;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 358/192;
+      margin-right: 0.8rem;
+    }
+
+    .project-details {
+      max-width: 100%;
+      padding: 0.4rem;
+
+      h4 {
+        font-size: 2rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+      }
+
+      .btn {
+        padding: 0.4rem 0.8rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+    left: -200px;
+    padding: 15px;
+  }
+
+  .header {
+    &.active {
+      transform: translateX(200px);
+      width: calc(100% - 200px);
+    }
+
+    flex-wrap: wrap;
+    padding: 10px;
+
+    .user-text {
+      max-width: 150px;
+    }
+  }
+
+  .clock-container {
+    margin: 0 10px;
+    font-size: 14px;
+    gap: 5px;
+  }
+
+  .content-wrapper {
+    &.active {
+      transform: translateX(200px);
+      width: calc(100% - 200px);
+    }
+  }
+
+  .task-list {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+  }
+
+  .main-content {
+    height: auto;
+  }
+
+  .task-menu-text {
+    font-size: 24px;
+  }
+
+  .project-card {
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%;
+    padding: 0.6rem;
+
+    img {
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+      margin-right: 0;
+      margin-bottom: 0.8rem;
+    }
+
+    .project-details {
+      max-width: 100%;
+      width: 100%;
+      padding: 0.4rem;
+
+      h4 {
+        font-size: 1.8rem;
+      }
+
+      p {
+        font-size: 0.9rem;
+      }
+
+      .btn {
+        align-self: center;
+        margin: 0.5rem 0;
+        padding: 0.4rem 0.8rem;
+      }
+    }
+  }
+
+  .footer {
+    text-align: center;
+
+    .socials-container {
+      flex-direction: row;
+      justify-content: center;
+      gap: 20px;
+    }
+  }
+
+  .token-info {
+    padding: 15px;
+    margin: 15px 0;
+    max-width: 100%;
+
+    h3 {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .sidebar {
+    width: 100%;
+    left: -100%;
+  }
+
+  .header {
+    &.active {
+      transform: translateX(0);
+      width: 100%;
+    }
+
+    .logo {
+      font-size: 18px;
+    }
+
+    .user-text {
+      max-width: 100px;
+      font-size: 14px;
+    }
+  }
+
+  .clock-container {
+    margin: 0 5px;
+    font-size: 12px;
+    gap: 3px;
+  }
+
+  .content-wrapper {
+    &.active {
+      transform: translateX(0);
+      width: 100%;
+    }
+  }
+
+  .task-menu-text {
+    font-size: 20px;
+  }
+
+  .footer {
+    padding: 20px 0;
+
+    h5 {
+      font-size: 16px;
+    }
+
+    .footer-link,
+    .social-link span {
+      font-size: 14px;
+    }
+
+    .social-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .logo img {
+      max-height: 40px;
+    }
+
+    .social-link span {
+      display: none;
+    }
+  }
+
+  .project-card {
+    padding: 0.5rem;
+
+    img {
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+      margin-bottom: 0.6rem;
+    }
+
+    .project-details {
+      padding: 0.3rem;
+
+      h4 {
+        font-size: 1.5rem;
+      }
+
+      p {
+        font-size: 0.8rem;
+      }
+
+      .btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .token-info {
+    padding: 10px;
+    margin: 10px 0;
+
+    h3 {
+      font-size: 18px;
+    }
+
+    p {
+      font-size: 12px;
+    }
+  }
+}
